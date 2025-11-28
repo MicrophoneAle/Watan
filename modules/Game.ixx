@@ -1,12 +1,16 @@
 ﻿export module Game;
+
 import <array>;
 import <memory>;
 import <string>;
 import <vector>;
+
 import Player;
 import Board;
 import RandomGenerator;
 import WatanTypes;
+
+using namespace std;
 
 export enum class GamePhase {
     InitialPlacement,
@@ -84,7 +88,7 @@ private:
     int currentTurn;
     int currentPlayer;
     Board board;
-    std::array<Player, 4> players;
+    array<Player, 4> players;
     RandomGenerator rng;
-    std::vector<PlayerColour> geeseVictims;
+    vector<PlayerColour> geeseVictims;
 };

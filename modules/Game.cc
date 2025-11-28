@@ -6,6 +6,7 @@ import <array>;
 import <map>;
 import <string>;
 import <vector>;
+
 import Player;
 import Board;
 import RandomGenerator;
@@ -31,8 +32,7 @@ Game::Game()
              Player(PlayerColour::Red),
              Player(PlayerColour::Orange),
              Player(PlayerColour::Yellow) },
-    rng(123)
-{
+    rng(123) {
     // Set all players to fair dice initially
     for (auto& player : players) {
         player.setDiceStrategy(new FairDiceStrategy());
@@ -127,14 +127,14 @@ void Game::promptInitialPlacement() {
         currentPlayer = 0; // Blue starts
         mustRoll = true;
         hasRolled = false;
+
         startTurnMessage();
         return;
     }
 
     // Snake order: 0,1,2,3, 3,2,1,0
-    int playerIdx = (initialPlacementIndex < 4)
-        ? initialPlacementIndex
-        : (7 - initialPlacementIndex);
+    int playerIdx = (initialPlacementIndex < 4) 
+        ? initialPlacementIndex : (7 - initialPlacementIndex);
 
     currentPlayer = playerIdx;
 
@@ -157,7 +157,7 @@ bool Game::handleInitialCriterionPlacement(int criterionId) {
     // Update board first
     board.getCriteria()[criterionId].setOwner(getCurrentPlayerColour());
 
-    // Then update player (player doesn't modify board anymore)
+    // Update player after
     getPlayer().addCriterion(criterionId, nullptr);
 
     cout << "Student " << toString(getCurrentPlayerColour())
@@ -170,7 +170,9 @@ bool Game::handleInitialCriterionPlacement(int criterionId) {
 }
 
 void Game::startTurnMessage() {
-    if (gamePhase == GamePhase::InitialPlacement) return;
+    if (gamePhase == GamePhase::InitialPlacement) {
+        return;
+    }
 
     cout << "\n========================================\n";
     cout << "Turn " << currentTurn << "\n";
@@ -189,7 +191,6 @@ void Game::nextTurn() {
         cout << "Cannot end turn during initial placement.\n";
         return;
     }
-
     if (mustRoll || !hasRolled) {
         cout << "You must roll the dice before ending your turn.\n";
         return;
@@ -203,6 +204,7 @@ void Game::nextTurn() {
         cout << "> ";
 
         string response;
+
         if (cin >> response) {
             if (response == "yes") {
                 resetGame();
@@ -215,7 +217,7 @@ void Game::nextTurn() {
 
     // Move to next player
     currentPlayer = (currentPlayer + 1) % 4;
-    ++currentTurn;
+    currentTurn++;
     mustRoll = true;
     hasRolled = false;
 
@@ -227,7 +229,6 @@ int Game::rollDice() {
         cout << "Cannot roll dice during initial placement.\n";
         return 0;
     }
-
     if (hasRolled) {
         cout << "You have already rolled this turn.\n";
         return 0;
@@ -259,15 +260,19 @@ void Game::distributeResources(int roll) {
         return;
     }
 
-    // Apply gains to players and print
+    // Apply resource gains to players and print
     for (const auto& [color, resources] : gains) {
-        int playerIdx = static_cast<int>(color) - 1; // Assuming enum starts at 1
-        if (playerIdx < 0 || playerIdx >= 4) continue;
+        int playerIdx = static_cast<int>(color) - 1;
+
+        if (playerIdx < 0 || playerIdx >= 4) {
+            continue;
+        }
 
         cout << "Student " << toString(color) << " gained:\n";
 
         // Aggregate resources by type
         map<ResourceType, int> aggregated;
+
         for (const auto& [type, amount] : resources) {
             aggregated[type] += amount;
         }
@@ -283,19 +288,19 @@ void Game::distributeResources(int roll) {
 void Game::handleGeese() {
     cout << "\n*** A 7 was rolled! Geese are active! ***\n\n";
 
-    // Step 1: Players with 10+ resources lose half
+    // Players with 10+ resources lose half randomly
     for (int i = 0; i < 4; i++) {
         int totalResources = players[i].getTotalResources();
+
         if (totalResources >= 10) {
             int toLose = totalResources / 2;
             cout << "Student " << toString(players[i].getColour())
                 << " loses " << toLose << " resources to the geese.\n";
-
             players[i].loseRandomResources(toLose, rng);
         }
     }
 
-    // Step 2: Set state to wait for geese placement
+    // Wait for currenet player to place geese
     waitingForGeesePlacement = true;
 
     cout << "\nStudent " << toString(getCurrentPlayerColour())
@@ -309,33 +314,33 @@ bool Game::handleGeesePlacement(int tileIndex) {
         cout << "Not waiting for geese placement.\n";
         return false;
     }
-
     if (tileIndex < 0 || tileIndex >= 19) {
         cout << "Invalid tile index. Enter a number from 0 to 18.\n";
         cout << "> ";
         return false;
     }
-
     if (tileIndex == board.getGeeseTileIndex()) {
         cout << "Geese are already on that tile. Choose a different tile.\n";
         cout << "> ";
         return false;
     }
-
     board.placeGeese(tileIndex);
     cout << "Geese moved to tile " << tileIndex << ".\n";
 
-    // Step 3: Find potential victims
+    // Find potential victims >:)
     geeseVictims.clear();
     vector<int> criteriaOnTile = board.getCriteriaOnTile(tileIndex);
 
     for (int critId : criteriaOnTile) {
         const Criterion& crit = board.getCriteria()[critId];
+
         if (crit.getLevel() > 0 && crit.getOwner() != getCurrentPlayerColour()) {
             int victimIdx = static_cast<int>(crit.getOwner()) - 1;
+
             if (victimIdx >= 0 && victimIdx < 4 && players[victimIdx].getTotalResources() > 0) {
-                // Add if not already in list
+                // Find new victims
                 bool found = false;
+
                 for (PlayerColour v : geeseVictims) {
                     if (v == crit.getOwner()) {
                         found = true;
@@ -357,11 +362,13 @@ bool Game::handleGeesePlacement(int tileIndex) {
         return true;
     }
 
-    // Now wait for steal choice
+    // Wait for current player to choose victim
     waitingForGeeseSteal = true;
 
     cout << "Student " << toString(getCurrentPlayerColour())
         << " can choose to steal from: ";
+
+    // Print out possible victims
     for (size_t i = 0; i < geeseVictims.size(); i++) {
         if (i > 0) cout << ", ";
         cout << toString(geeseVictims[i]);
@@ -380,17 +387,30 @@ bool Game::handleGeeseSteal(const string& colourName) {
     // Parse colour
     PlayerColour victim = PlayerColour::None;
     string lower = colourName;
-    for (char& c : lower) c = tolower(c);
+    for (char& c : lower) {
+        c = tolower(c);
+    }
 
-    if (lower == "blue") victim = PlayerColour::Blue;
-    else if (lower == "red") victim = PlayerColour::Red;
-    else if (lower == "orange") victim = PlayerColour::Orange;
-    else if (lower == "yellow") victim = PlayerColour::Yellow;
+    if (lower == "blue") {
+        victim = PlayerColour::Blue;
+    }
+    else if (lower == "red") {
+        victim = PlayerColour::Red;
+    }
+    else if (lower == "orange") {
+        victim = PlayerColour::Orange;
+    }
+    else if (lower == "yellow") {
+        victim = PlayerColour::Yellow;
+    }
 
     if (victim == PlayerColour::None) {
         cout << "Invalid colour. Choose from: ";
+
         for (size_t i = 0; i < geeseVictims.size(); i++) {
-            if (i > 0) cout << ", ";
+            if (i > 0) {
+                cout << ", ";
+            }
             cout << toString(geeseVictims[i]);
         }
         cout << "\n> ";
@@ -408,6 +428,7 @@ bool Game::handleGeeseSteal(const string& colourName) {
 
     if (!validVictim) {
         cout << "You can only steal from: ";
+
         for (size_t i = 0; i < geeseVictims.size(); i++) {
             if (i > 0) cout << ", ";
             cout << toString(geeseVictims[i]);
@@ -436,18 +457,22 @@ bool Game::handleGeeseSteal(const string& colourName) {
     return true;
 }
 
+// Wrapper for handleGeesePlacement
 bool Game::moveGeese(int tileIndex) {
     return handleGeesePlacement(tileIndex);
 }
 
 bool Game::stealResource(PlayerColour victim) {
     int victimIdx = static_cast<int>(victim) - 1;
+
+    // Validate victim
     if (victimIdx < 0 || victimIdx >= 4) {
         cout << "Invalid player.\n";
         return false;
     }
 
     ResourceType stolen = players[victimIdx].stealRandomResource(rng);
+
     if (stolen == ResourceType::Netflix) {
         cout << "Student " << toString(victim) << " has no resources to steal.\n";
         return false;
@@ -461,6 +486,7 @@ bool Game::stealResource(PlayerColour victim) {
     return true;
 }
 
+// SetDice functions
 void Game::setDiceFair() {
     getPlayer().setDiceStrategy(new FairDiceStrategy());
     cout << "Dice set to FAIR for student "
@@ -473,6 +499,7 @@ void Game::setDiceLoaded() {
         << toString(getCurrentPlayerColour()) << ".\n";
 }
 
+// Build functions
 bool Game::completeCriterion(int criterionId) {
     if (gamePhase == GamePhase::InitialPlacement) {
         return handleInitialCriterionPlacement(criterionId);
@@ -488,13 +515,13 @@ bool Game::completeCriterion(int criterionId) {
         return false;
     }
 
-    // Check resources: 1 Caffeine, 1 Lab, 1 Lecture, 1 Tutorial
+    // Check resources
     if (!getPlayer().spendResource(ResourceType::Caffeine, 1) ||
         !getPlayer().spendResource(ResourceType::Lab, 1) ||
         !getPlayer().spendResource(ResourceType::Lecture, 1) ||
         !getPlayer().spendResource(ResourceType::Tutorial, 1)) {
 
-        // Refund any spent
+        // Refund resources spent
         getPlayer().addResource(ResourceType::Caffeine, 1);
         getPlayer().addResource(ResourceType::Lab, 1);
         getPlayer().addResource(ResourceType::Lecture, 1);
@@ -506,7 +533,7 @@ bool Game::completeCriterion(int criterionId) {
     // Update board first
     board.getCriteria()[criterionId].setOwner(getCurrentPlayerColour());
 
-    // Then update player (player doesn't modify board anymore)
+    // Update player after
     getPlayer().addCriterion(criterionId, nullptr);
 
     cout << "Student " << toString(getCurrentPlayerColour())
@@ -529,6 +556,7 @@ bool Game::improveCriterion(int criterionId) {
     }
 
     int currentLevel = crit.getLevel();
+
     if (currentLevel >= 3) {
         cout << "This criterion is already at maximum level (Exam).\n";
         return false;
@@ -536,11 +564,13 @@ bool Game::improveCriterion(int criterionId) {
 
     // Check resources based on next level
     if (currentLevel == 1) {
-        // Upgrade to Midterm: 2 Lecture, 3 Study
+        // Upgrade to Midterm
         if (!getPlayer().spendResource(ResourceType::Lecture, 2) ||
             !getPlayer().spendResource(ResourceType::Study, 3)) {
 
+            // Refund
             getPlayer().addResource(ResourceType::Lecture, 2);
+            getPlayer().addResource(ResourceType::Study, 3);
             cout << "You do not have enough resources.\n";
             return false;
         }
@@ -548,14 +578,14 @@ bool Game::improveCriterion(int criterionId) {
         // Update board
         crit.upgrade();
 
-        // Update player
+        // Update player after
         getPlayer().improveCriterion(criterionId);
 
         cout << "Student " << toString(getCurrentPlayerColour())
             << " improved criterion " << criterionId << " to Midterm.\n";
     }
     else if (currentLevel == 2) {
-        // Upgrade to Exam: 3 Caffeine, 2 Lab, 2 Lecture, 1 Tutorial, 2 Study
+        // Upgrade to Exam
         if (!getPlayer().spendResource(ResourceType::Caffeine, 3) ||
             !getPlayer().spendResource(ResourceType::Lab, 2) ||
             !getPlayer().spendResource(ResourceType::Lecture, 2) ||
@@ -575,7 +605,7 @@ bool Game::improveCriterion(int criterionId) {
         // Update board
         crit.upgrade();
 
-        // Update player
+        // Update player after
         getPlayer().improveCriterion(criterionId);
 
         cout << "Student " << toString(getCurrentPlayerColour())
@@ -596,7 +626,7 @@ bool Game::achieveGoal(int goalId) {
         return false;
     }
 
-    // Check resources: 1 Study, 1 Tutorial
+    // Check resources
     if (!getPlayer().spendResource(ResourceType::Study, 1) ||
         !getPlayer().spendResource(ResourceType::Tutorial, 1)) {
 
@@ -618,6 +648,7 @@ bool Game::achieveGoal(int goalId) {
 }
 
 void Game::resetGame() {
+    // Reset values
     quit = false;
     gamePhase = GamePhase::InitialPlacement;
     initialPlacementIndex = 0;
@@ -631,6 +662,7 @@ void Game::resetGame() {
 
     // Reset board and players
     board = Board();
+
     players = {
         Player(PlayerColour::Blue),
         Player(PlayerColour::Red),
@@ -646,17 +678,14 @@ void Game::resetGame() {
 }
 
 bool Game::saveGame(const string& filename) const {
-    // Note: Without fstream, we can't actually save to file
-    // This is a stub that just prints a message
+    // Function stub
     cout << "Save functionality requires fstream (not available).\n";
     cout << "Game state for " << filename << " would be saved here.\n";
     return false;
 }
 
 bool Game::loadGame(const string& filename) {
-    // Note: Without fstream, we can't actually load from file
-    // This is a stub that would look like this:
-
+    // Function stub
     cout << "Load functionality requires fstream (not available).\n";
     cout << "Game state from " << filename << " would be loaded here.\n";
 
