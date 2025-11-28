@@ -11,5 +11,5 @@ public:
     int roll(RandomGenerator& rng) override;
 
 private:
-    int v1, v2;
+    int d1, d2;
 };
