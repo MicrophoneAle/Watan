@@ -61,17 +61,29 @@ Board::Board()
 // =============================
 void Board::initializeTiles() {
     std::vector<ResourceType> res = {
-        ResourceType::Caffeine, ResourceType::Study, ResourceType::Lecture,
-        ResourceType::Lab, ResourceType::Tutorial, ResourceType::Caffeine,
-        ResourceType::Study, ResourceType::Lecture, ResourceType::Lab,
-        ResourceType::Tutorial, ResourceType::Caffeine, ResourceType::Study,
-        ResourceType::Lecture, ResourceType::Lab, ResourceType::Tutorial,
-        ResourceType::Caffeine, ResourceType::Study, ResourceType::Lecture,
-        ResourceType::Netflix
+        ResourceType::Caffeine, // 0
+        ResourceType::Lab,      // 1
+        ResourceType::Study,    // 2
+        ResourceType::Lab,      // 3
+        ResourceType::Netflix,  // 4 (Start Geese Here)
+        ResourceType::Study,    // 5
+        ResourceType::Lecture,  // 6
+        ResourceType::Caffeine, // 7
+        ResourceType::Study,    // 8
+        ResourceType::Caffeine, // 9
+        ResourceType::Caffeine, // 10
+        ResourceType::Lab,      // 11
+        ResourceType::Tutorial, // 12
+        ResourceType::Lab,      // 13
+        ResourceType::Tutorial, // 14
+        ResourceType::Lecture,  // 15
+        ResourceType::Tutorial, // 16
+        ResourceType::Lecture,  // 17
+        ResourceType::Lecture   // 18
     };
 
     std::vector<int> vals = {
-        4,6,9,5,8,10,3,11,12,2,4,6,9,5,8,10,3,11,7
+        3, 10, 5, 4, 7, 10, 11, 3, 8, 2, 6, 8, 12, 5, 11, 4, 6, 9, 9
     };
 
     for (int i = 0; i < 19; i++)
@@ -201,7 +213,7 @@ void Board::display(std::ostream& out) const {
     out << S1 << "/    " << r(3) << "    \\            /    " << r(4) << "    \\            /    " << r(5) << "    \\" << std::endl;
 
     // ROW 3 (Leftmost)
-    out << c(12) << "       " << v(0) << "       " << c(13) << h(18) << c(14) << "       " << v(4) << "       " << c(15) << h(19) << c(16) << "       " << v(5) << "       " << c(17) << std::endl;
+    out << c(12) << "       " << v(3) << "       " << c(13) << h(18) << c(14) << "       " << v(4) << "       " << c(15) << h(19) << c(16) << "       " << v(5) << "       " << c(17) << std::endl;
     out << "   \\                /            \\                /            \\                /" << std::endl;
     out << "   " << d(20) << "             " << d(21) << "      " << t(6) << "     " << d(22) << "             " << d(23) << "      " << t(7) << "     " << d(24) << "             " << d(25) << std::endl;
     out << "     \\            /    " << r(0) << "    \\            /    " << r(0) << "    \\            /" << std::endl;
@@ -213,31 +225,31 @@ void Board::display(std::ostream& out) const {
     out << S1 << "/    " << r(9) << "    \\            /    " << r(10) << "    \\            /    " << r(11) << "    \\" << std::endl;
 
     // ROW 5 (Leftmost)
-    out << c(24) << "       " << v(12) << "       " << c(25) << h(35) << c(26) << "       " << v(13) << "       " << c(27) << h(36) << c(28) << "       " << v(14) << "       " << c(29) << std::endl;
+    out << c(24) << "       " << v(8) << "       " << c(25) << h(35) << c(26) << "       " << v(9) << "       " << c(27) << h(36) << c(28) << "       " << v(10) << "       " << c(29) << std::endl;
     out << "   \\                /            \\                /            \\                /" << std::endl;
     out << "   " << d(37) << "             " << d(38) << "      " << t(11) << "     " << d(39) << "             " << d(40) << "      " << t(12) << "     " << d(41) << "             " << d(42) << std::endl;
     out << "     \\            /    " << r(12) << "    \\            /    " << r(13) << "    \\            /" << std::endl;
 
     // ROW 6 
-    out << S1 << "  " << c(30) << h(43) << c(31) << "       " << v(15) << "       " << c(32) << h(44) << c(33) << "       " << v(16) << "       " << c(34) << h(45) << c(35) << std::endl;
+    out << S1 << "  " << c(30) << h(43) << c(31) << "       " << v(11) << "       " << c(32) << h(44) << c(33) << "       " << v(12) << "       " << c(34) << h(45) << c(35) << std::endl;
     out << S1 << "  /            \\                /            \\                /            \\" << std::endl;
     out << S1 << d(46) << "      " << t(13) << "     " << d(47) << "             " << d(48) << "      " << t(14) << "     " << d(49) << "             " << d(50) << "      " << t(15) << "     " << d(51) << std::endl;
     out << S1 << "/    " << r(14) << "    \\            /    " << r(15) << "    \\            /    " << r(16) << "    \\" << std::endl;
 
     // ROW 7 (Leftmost)
-    out << c(36) << "       " << v(13) << "       " << c(37) << h(52) << c(38) << "       " << v(14) << "       " << c(39) << h(53) << c(40) << "       " << v(14) << "       " << c(41) << std::endl;
+    out << c(36) << "       " << v(13) << "       " << c(37) << h(52) << c(38) << "       " << v(14) << "       " << c(39) << h(53) << c(40) << "       " << v(15) << "       " << c(41) << std::endl;
     out << "   \\                /            \\                /            \\                /" << std::endl;
     out << "   " << d(54) << "             " << d(55) << "      " << t(16) << "     " << d(56) << "             " << d(57) << "      " << t(17) << "     " << d(58) << "             " << d(59) << std::endl;
     out << "     \\            /    " << r(12) << "    \\            /    " << r(13) << "    \\            /" << std::endl;
 
     // ROW 8
-    out << S1 << "  " << c(42) << h(60) << c(43) << "       " << v(15) << "       " << c(44) << h(61) << c(45) << "       " << v(16) << "       " << c(46) << h(62) << c(47) << std::endl;
+    out << S1 << "  " << c(42) << h(60) << c(43) << "       " << v(16) << "       " << c(44) << h(61) << c(45) << "       " << v(17) << "       " << c(46) << h(62) << c(47) << std::endl;
     out << S2 << "\\                /            \\                /" << std::endl;
     out << S2 << d(63) << "             " << d(64) << "      " << t(18) << "     " << d(65) << "             " << d(66) << std::endl;
     out << S2 << "  \\            /    " << r(15) << "    \\            / " << std::endl;
 
     // ROW 9 (Tip)
-    out << S2 << "  " << c(48) << h(67) << c(49) << "       " << v(0) << "       " << c(50) << h(68) << c(51) << std::endl;
+    out << S2 << "  " << c(48) << h(67) << c(49) << "       " << v(18) << "       " << c(50) << h(68) << c(51) << std::endl;
     out << S3 << "\\                /" << std::endl;
     out << S3 << d(69) << "             " << d(70) << std::endl;
     out << S3 << "  \\            /" << std::endl;
