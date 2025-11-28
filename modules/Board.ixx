@@ -23,6 +23,7 @@ public:
     void distributeRessources(int roll);
 
     void display(std::ostream& out) const;
+    void print() const;
 
     friend std::ostream& operator<<(std::ostream& out, const Board& board);
 };
