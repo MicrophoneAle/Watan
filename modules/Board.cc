@@ -17,6 +17,7 @@ Board::Board() : geeseTileIndex(4) { // Geese start on netflix tile
     criteria.resize(54);
     goals.resize(72);
     tileCoords.resize(19);
+    initializeGoalConnections();
 
     for (int i = 0; i < 54; i++) {
         criteria[i] = Criterion(i);
@@ -55,6 +56,88 @@ Board::Board() : geeseTileIndex(4) { // Geese start on netflix tile
     tileCoords[18] = { 44,45,50,53,52,49 };
 
     initializeTiles();
+}
+
+// Initialize the goal connection mapping based on tile structure
+// Each tile is a hexagon with 6 edges connecting its 6 vertices
+void Board::initializeGoalConnections() {
+    goalConnections.clear();
+
+    // Extracted from tile coordinates - each tile has 6 vertices that form edges
+    // These are the correct connections based on the actual hexagonal structure
+
+    goalConnections[0] = { 0, 1 };
+    goalConnections[1] = { 0, 3 };
+    goalConnections[2] = { 1, 4 };
+    goalConnections[3] = { 2, 3 };
+    goalConnections[4] = { 2, 7 };
+    goalConnections[5] = { 3, 8 };
+    goalConnections[6] = { 4, 5 };
+    goalConnections[7] = { 4, 9 };
+    goalConnections[8] = { 5, 10 };
+    goalConnections[9] = { 6, 7 };
+    goalConnections[10] = { 6, 12 };
+    goalConnections[11] = { 7, 13 };
+    goalConnections[12] = { 8, 9 };
+    goalConnections[13] = { 8, 14 };
+    goalConnections[14] = { 9, 15 };
+    goalConnections[15] = { 10, 11 };
+    goalConnections[16] = { 10, 16 };
+    goalConnections[17] = { 11, 17 };
+    goalConnections[18] = { 12, 18 };
+    goalConnections[19] = { 13, 14 };
+    goalConnections[20] = { 13, 19 };
+    goalConnections[21] = { 14, 20 };
+    goalConnections[22] = { 15, 16 };
+    goalConnections[23] = { 15, 21 };
+    goalConnections[24] = { 16, 22 };
+    goalConnections[25] = { 17, 23 };
+    goalConnections[26] = { 18, 19 };
+    goalConnections[27] = { 18, 24 };
+    goalConnections[28] = { 19, 25 };
+    goalConnections[29] = { 20, 21 };
+    goalConnections[30] = { 20, 26 };
+    goalConnections[31] = { 21, 27 };
+    goalConnections[32] = { 22, 23 };
+    goalConnections[33] = { 22, 28 };
+    goalConnections[34] = { 23, 29 };
+    goalConnections[35] = { 24, 30 };
+    goalConnections[36] = { 25, 26 };
+    goalConnections[37] = { 25, 31 };
+    goalConnections[38] = { 26, 32 };
+    goalConnections[39] = { 27, 28 };
+    goalConnections[40] = { 27, 33 };
+    goalConnections[41] = { 28, 34 };
+    goalConnections[42] = { 29, 35 };
+    goalConnections[43] = { 30, 31 };
+    goalConnections[44] = { 30, 36 };
+    goalConnections[45] = { 31, 37 };
+    goalConnections[46] = { 32, 33 };
+    goalConnections[47] = { 32, 38 };
+    goalConnections[48] = { 33, 39 };
+    goalConnections[49] = { 34, 35 };
+    goalConnections[50] = { 34, 40 };
+    goalConnections[51] = { 35, 41 };
+    goalConnections[52] = { 36, 42 };
+    goalConnections[53] = { 37, 38 };
+    goalConnections[54] = { 37, 43 };
+    goalConnections[55] = { 38, 44 };
+    goalConnections[56] = { 39, 40 };
+    goalConnections[57] = { 39, 45 };
+    goalConnections[58] = { 40, 46 };
+    goalConnections[59] = { 41, 47 };
+    goalConnections[60] = { 42, 43 };
+    goalConnections[61] = { 43, 48 };
+    goalConnections[62] = { 44, 45 };
+    goalConnections[63] = { 44, 49 };
+    goalConnections[64] = { 45, 50 };
+    goalConnections[65] = { 46, 47 };
+    goalConnections[66] = { 46, 51 };
+    goalConnections[67] = { 48, 49 };
+    goalConnections[68] = { 49, 52 };
+    goalConnections[69] = { 50, 51 };
+    goalConnections[70] = { 50, 53 };
+    goalConnections[71] = { 52, 53 };
 }
 
 // Tile initialization
@@ -109,47 +192,48 @@ void Board::placeGeese(int idx) {
     }
 }
 
-// Adjacent checker functions
+// CORRECT adjacency based on goal connections
 vector<int> Board::getAdjacentCriteria(int criterionId) const {
     vector<int> adjacent;
 
-    // Criterion adjacency is based on board structure
-    // Each criterion can have up to 3 adjacent criteria
-    int row = criterionId / 6;
-    int col = criterionId % 6;
-
-    // Left neighbor
-    if (col > 0) {
-        adjacent.push_back(criterionId - 1);
-    }
-    // Right neighbor
-    if (col < 5) {
-        adjacent.push_back(criterionId + 1);
-    }
-    // Vertical neighbors depend on position
-    if (row > 0) {
-        adjacent.push_back(criterionId - 6);
-    }
-    if (row < 8) {
-        adjacent.push_back(criterionId + 6);
+    if (criterionId < 0 || criterionId >= 54) {
+        return adjacent;
     }
 
-    // Filter out invalid indices 
-    vector<int> filtered;
+    // Check all goals to see which ones connect to this criterion
+    for (const auto& [goalId, criteria] : goalConnections) {
+        int otherCriterion = -1;
 
-    for (int id : adjacent) {
-        if (id >= 0 && id < 54) {
-            filtered.push_back(id);
+        if (criteria.first == criterionId) {
+            otherCriterion = criteria.second;
+        }
+        else if (criteria.second == criterionId) {
+            otherCriterion = criteria.first;
+        }
+
+        if (otherCriterion != -1) {
+            // Check if already in adjacent list
+            bool found = false;
+            for (int adj : adjacent) {
+                if (adj == otherCriterion) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                adjacent.push_back(otherCriterion);
+            }
         }
     }
-    return filtered;
+
+    return adjacent;
 }
 
 bool Board::adjacentCriterionExists(int id) const {
     auto adjacent = getAdjacentCriteria(id);
 
     for (int adjId : adjacent) {
-        if (criteria[adjId].getOwner() != PlayerColour::None) {
+        if (adjId >= 0 && adjId < 54 && criteria[adjId].getOwner() != PlayerColour::None) {
             return true;
         }
     }
@@ -179,11 +263,10 @@ bool Board::isValidCriterionPlacement(int id, PlayerColour player, bool isInitia
 }
 
 bool Board::isConnectedToPlayerGoal(int criterionId, PlayerColour player) const {
-    // Check if an adjacent goal belongs to the player
-    vector<int> adjacentGoals = getAdjacentGoals(criterionId);
-
-    for (int goalId : adjacentGoals) {
-        if (goalId >= 0 && goalId < 72 && goals[goalId].getOwner() == player) {
+    // Check all goals to see if any connect this criterion and belong to the player
+    for (const auto& [goalId, criteria] : goalConnections) {
+        if ((criteria.first == criterionId || criteria.second == criterionId) &&
+            goalId >= 0 && goalId < 72 && goals[goalId].getOwner() == player) {
             return true;
         }
     }
@@ -193,10 +276,12 @@ bool Board::isConnectedToPlayerGoal(int criterionId, PlayerColour player) const 
 vector<int> Board::getAdjacentGoals(int criterionId) const {
     vector<int> adjacent;
 
-    int baseGoal = criterionId * 2;
-
-    if (baseGoal < 72) adjacent.push_back(baseGoal);
-    if (baseGoal + 1 < 72) adjacent.push_back(baseGoal + 1);
+    // Find all goals that connect to this criterion
+    for (const auto& [goalId, criteria] : goalConnections) {
+        if (criteria.first == criterionId || criteria.second == criterionId) {
+            adjacent.push_back(goalId);
+        }
+    }
 
     return adjacent;
 }
@@ -210,24 +295,36 @@ bool Board::isValidGoalPlacement(int id, PlayerColour player) const {
     }
 
     // Goal must be adjacent to player's criterion or goal
-    int v1 = id / 2;
-    int v2 = v1 + 1;
+    // Check if either endpoint criterion belongs to the player
+    auto it = goalConnections.find(id);
+    if (it != goalConnections.end()) {
+        int v1 = it->second.first;
+        int v2 = it->second.second;
 
-    if (v1 >= 0 && v1 < 54 && criteria[v1].getOwner() == player) {
-        return true;
-    }
-    if (v2 >= 0 && v2 < 54 && criteria[v2].getOwner() == player) {
-        return true;
-    }
-
-    // Check adjacent goals
-    vector<int> adjGoals = { id - 1, id + 1, id - 6, id + 6 };
-
-    for (int adjId : adjGoals) {
-        if (adjId >= 0 && adjId < 72 && goals[adjId].getOwner() == player) {
+        if (v1 >= 0 && v1 < 54 && criteria[v1].getOwner() == player) {
+            return true;
+        }
+        if (v2 >= 0 && v2 < 54 && criteria[v2].getOwner() == player) {
             return true;
         }
     }
+
+    // Check if connected to another goal owned by player
+    // A goal is adjacent to another goal if they share a criterion endpoint
+    if (it != goalConnections.end()) {
+        for (const auto& [otherGoalId, otherCriteria] : goalConnections) {
+            if (otherGoalId != id && goals[otherGoalId].getOwner() == player) {
+                // Check if they share a criterion
+                if (it->second.first == otherCriteria.first ||
+                    it->second.first == otherCriteria.second ||
+                    it->second.second == otherCriteria.first ||
+                    it->second.second == otherCriteria.second) {
+                    return true;
+                }
+            }
+        }
+    }
+
     return false;
 }
 
@@ -296,20 +393,20 @@ string Board::getCriterionDisplay(int id) const {
     char owner = ' ';
 
     switch (crit.getOwner()) {
-        case PlayerColour::Blue: owner = 'B'; break;
-        case PlayerColour::Red: owner = 'R'; break;
-        case PlayerColour::Orange: owner = 'O'; break;
-        case PlayerColour::Yellow: owner = 'Y'; break;
-        default: owner = '?'; break;
+    case PlayerColour::Blue: owner = 'B'; break;
+    case PlayerColour::Red: owner = 'R'; break;
+    case PlayerColour::Orange: owner = 'O'; break;
+    case PlayerColour::Yellow: owner = 'Y'; break;
+    default: owner = '?'; break;
     }
 
     char level = ' ';
 
     switch (crit.getLevel()) {
-        case 1: level = 'A'; break; // Assignment
-        case 2: level = 'M'; break; // Midterm
-        case 3: level = 'E'; break; // Exam
-        default: level = '?'; break;
+    case 1: level = 'A'; break; // Assignment
+    case 2: level = 'M'; break; // Midterm
+    case 3: level = 'E'; break; // Exam
+    default: level = '?'; break;
     }
     return string(1, owner) + string(1, level);
 }
@@ -328,11 +425,11 @@ string Board::getGoalDisplay(int id) const {
     char owner = ' ';
 
     switch (goal.getOwner()) {
-        case PlayerColour::Blue: owner = 'B'; break;
-        case PlayerColour::Red: owner = 'R'; break;
-        case PlayerColour::Orange: owner = 'O'; break;
-        case PlayerColour::Yellow: owner = 'Y'; break;
-        default: owner = '?'; break;
+    case PlayerColour::Blue: owner = 'B'; break;
+    case PlayerColour::Red: owner = 'R'; break;
+    case PlayerColour::Orange: owner = 'O'; break;
+    case PlayerColour::Yellow: owner = 'Y'; break;
+    default: owner = '?'; break;
     }
 
     return string(1, owner) + "A"; // Achievement
@@ -344,8 +441,10 @@ void Board::display(ostream& out) const {
     auto d = [this](int i) { return getGoalDisplay(i); };
     auto t = [](int i) { return (i < 10 ? " " : "") + std::to_string(i); };
     auto r = [&](int i) { return tiles[i].getResourceStr(); };
-    auto v = [&](int i) { if (i == geeseTileIndex) return std::string(" GE");
-        return tiles[i].getValueStr(); };
+    auto v = [&](int i) {
+        if (i == geeseTileIndex) return std::string(" GEESE");
+        return tiles[i].getValueStr();
+        };
 
     const std::string S1 = "   ";
     const std::string S2 = "                  ";

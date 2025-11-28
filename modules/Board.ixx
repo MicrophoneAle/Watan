@@ -16,6 +16,7 @@ public:
 
     // Setup
     void initializeTiles();
+    void initializeGoalConnections();
     void placeGeese(int tileIndex);
 
     // Core accessors
@@ -54,6 +55,7 @@ private:
     std::vector<Criterion> criteria;
     std::vector<Goal> goals;
     std::vector<std::array<int, 6>> tileCoords;
+    std::map<int, std::pair<int, int>> goalConnections;  // goalId -> (criterion1, criterion2)
     int geeseTileIndex;
 
     // Adjacent helpers
