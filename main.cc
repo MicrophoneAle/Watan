@@ -1,6 +1,7 @@
 import <iostream>;
 import <string>;
 import <sstream>;
+
 import Game;
 import CommandParser;
 import CommandExecutor;
@@ -17,18 +18,21 @@ int main() {
     game.startGame();
 
     string line;
+
     while (game.isRunning()) {
         cout << "> ";
 
         if (!getline(cin, line)) {
-            // EOF detected - save backup and exit
+            // EOF detected
             cout << "\nEOF detected. Exiting...\n";
             break;
         }
 
-        if (line.empty()) continue;
+        if (line.empty()) {
+            continue;
+        }
 
-        // Handle geese placement (waiting for tile number)
+        // Handle geese placement
         if (game.isWaitingForGeesePlacement()) {
             try {
                 int tileNum = stoi(line);
@@ -40,13 +44,13 @@ int main() {
             continue;
         }
 
-        // Handle geese steal (waiting for colour name)
+        // Handle geese steal
         if (game.isWaitingForGeeseSteal()) {
             game.handleGeeseSteal(line);
             continue;
         }
 
-        // Handle initial placement (waiting for criterion number)
+        // Handle initial placement
         if (game.getGamePhase() == GamePhase::InitialPlacement) {
             try {
                 int criterionId = stoi(line);
@@ -65,7 +69,6 @@ int main() {
         Command cmd = parser.parse(line);
         exec.execute(cmd, game);
     }
-
     cout << "\nThanks for playing Students of Watan!\n";
     return 0;
 }
