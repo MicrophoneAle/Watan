@@ -1,14 +1,17 @@
 export module CommandParser;
+
 import <string>;
 import <vector>;
 import <sstream>;
 
+using namespace std;
+
 export struct Command {
-    std::string name;
-    std::vector<std::string> args;
+    string name;
+    vector<string> args;
 };
 
 export class CommandParser {
 public:
-    Command parse(const std::string& line);
+    Command parse(const string& line);
 };
