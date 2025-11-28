@@ -1,12 +1,14 @@
 export module Player;
+
 import <array>;
 import <vector>;
 import <iostream>;
+
 import WatanTypes;
 import IDiceStrategy;
 import RandomGenerator;
 
-// Forward declaration
+// Forward declaration of Board
 class Board;
 
 export class Player {
@@ -29,7 +31,7 @@ public:
     void loseRandomResources(int count, RandomGenerator& rng);
     ResourceType stealRandomResource(RandomGenerator& rng);
 
-    // Criteria + goals
+    // Criteria and goals
     void addCriterion(int criterionId, Board* board);
     void improveCriterion(int criterionId);
     void addGoal(int goalId);
@@ -48,18 +50,18 @@ public:
     void printStatus(std::ostream& out) const;
     void printCriteria(std::ostream& out) const;
 
-    // Save/Load
+    // Save/load
     void save(std::ostream& out) const;
     void load(std::istream& in, Board* board);
 
 private:
     PlayerColour colour;
-    std::array<int, 5> resources; // Caffeine, Lab, Lecture, Study, Tutorial
+    std::array<int, 5> resources; // Resources
     std::vector<std::pair<int, int>> completedCriteria; // (criterionId, level)
     std::vector<int> achievedGoals;
     int numCourseCriteria;
     int numStudyBuddies;
     bool hasLargestStudyGroup;
     bool hasLongestGoals;
-    IDiceStrategy* diceStrat; // Non-owning in the sense we delete it ourselves
+    IDiceStrategy* diceStrat;
 };
