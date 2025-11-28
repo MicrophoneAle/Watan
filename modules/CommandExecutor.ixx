@@ -1,4 +1,3 @@
-// ===== CommandExecutor.ixx =====
 export module CommandExecutor;
 
 import <iostream>;
