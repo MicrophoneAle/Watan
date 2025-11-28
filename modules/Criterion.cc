@@ -20,7 +20,7 @@ int Criterion::getLevel() const {
 
 void Criterion::setOwner(PlayerColour p) {
     owner = p;
-    level = 1; // Start at Assignment (level 1)
+    level = 1; // Start at assignment level
 }
 
 void Criterion::upgrade() {

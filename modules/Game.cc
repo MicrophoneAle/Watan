@@ -70,12 +70,16 @@ const Player& Game::getPlayer() const {
 }
 
 Player& Game::getPlayer(int index) {
-    if (index < 0 || index >= 4) throw std::out_of_range("Invalid player index");
+    if (index < 0 || index >= 4) {
+        throw std::out_of_range("Invalid player index");
+    }
     return players.at(index);
 }
 
 const Player& Game::getPlayer(int index) const {
-    if (index < 0 || index >= 4) throw std::out_of_range("Invalid player index");
+    if (index < 0 || index >= 4) {
+        throw std::out_of_range("Invalid player index");
+    }
     return players.at(index);
 }
 
@@ -163,12 +167,10 @@ bool Game::handleInitialCriterionPlacement(int criterionId) {
         cout << "Not in initial placement phase.\n";
         return false;
     }
-
     if (waitingForInitialGoal) {
         cout << "You must place a goal first.\n";
         return false;
     }
-
     if (!board.isValidCriterionPlacement(criterionId, getCurrentPlayerColour(), true)) {
         cout << "You cannot build here.\n";
         return false;
@@ -187,7 +189,6 @@ bool Game::handleInitialCriterionPlacement(int criterionId) {
     lastPlacedCriterion = criterionId;
     waitingForInitialGoal = true;
     promptInitialPlacement();
-
     return true;
 }
 
@@ -196,7 +197,6 @@ bool Game::handleInitialGoalPlacement(int goalId) {
         cout << "Not in initial placement phase.\n";
         return false;
     }
-
     if (!waitingForInitialGoal) {
         cout << "You must place a criterion first.\n";
         return false;
@@ -239,7 +239,6 @@ bool Game::handleInitialGoalPlacement(int goalId) {
     initialPlacementIndex++;
 
     promptInitialPlacement();
-
     return true;
 }
 
@@ -321,7 +320,6 @@ int Game::rollDice() {
     else {
         distributeResources(val);
     }
-
     return val;
 }
 
@@ -350,7 +348,6 @@ void Game::distributeResources(int roll) {
         for (const auto& [type, amount] : resources) {
             aggregated[type] += amount;
         }
-
         for (const auto& [type, amount] : aggregated) {
             players[playerIdx].addResource(type, amount);
             cout << "  " << amount << " " << toString(type) << "\n";
@@ -427,7 +424,6 @@ bool Game::handleGeesePlacement(int tileIndex) {
             }
         }
     }
-
     waitingForGeesePlacement = false;
 
     if (geeseVictims.empty()) {
@@ -461,10 +457,10 @@ bool Game::handleGeeseSteal(const string& colourName) {
     // Parse colour
     PlayerColour victim = PlayerColour::None;
     string lower = colourName;
+
     for (char& c : lower) {
         c = tolower(c);
     }
-
     if (lower == "blue") {
         victim = PlayerColour::Blue;
     }
@@ -477,7 +473,6 @@ bool Game::handleGeeseSteal(const string& colourName) {
     else if (lower == "yellow") {
         victim = PlayerColour::Yellow;
     }
-
     if (victim == PlayerColour::None) {
         cout << "Invalid colour. Choose from: ";
 
@@ -524,7 +519,6 @@ bool Game::handleGeeseSteal(const string& colourName) {
             << " steals " << toString(stolen)
             << " from student " << toString(victim) << ".\n";
     }
-
     waitingForGeeseSteal = false;
     geeseVictims.clear();
 
@@ -582,12 +576,10 @@ bool Game::completeCriterion(int criterionId) {
     if (gamePhase == GamePhase::InitialPlacement) {
         return handleInitialCriterionPlacement(criterionId);
     }
-
     if (mustRoll) {
         cout << "You must roll the dice first.\n";
         return false;
     }
-
     if (!board.isValidCriterionPlacement(criterionId, getCurrentPlayerColour(), false)) {
         cout << "You cannot build here.\n";
         return false;
@@ -642,7 +634,7 @@ bool Game::improveCriterion(int criterionId) {
 
     // Check resources based on next level
     if (currentLevel == 1) {
-        // Upgrade to Midterm
+        // Not enough resourses
         if (!getPlayer().spendResource(ResourceType::Lecture, 2) ||
             !getPlayer().spendResource(ResourceType::Study, 3)) {
 
@@ -663,7 +655,7 @@ bool Game::improveCriterion(int criterionId) {
             << " improved criterion " << criterionId << " to Midterm.\n";
     }
     else if (currentLevel == 2) {
-        // Upgrade to Exam
+        // Not enough resourses
         if (!getPlayer().spendResource(ResourceType::Caffeine, 3) ||
             !getPlayer().spendResource(ResourceType::Lab, 2) ||
             !getPlayer().spendResource(ResourceType::Lecture, 2) ||
@@ -689,7 +681,6 @@ bool Game::improveCriterion(int criterionId) {
         cout << "Student " << toString(getCurrentPlayerColour())
             << " improved criterion " << criterionId << " to Exam.\n";
     }
-
     return true;
 }
 
@@ -698,13 +689,12 @@ bool Game::achieveGoal(int goalId) {
         cout << "You must roll the dice first.\n";
         return false;
     }
-
     if (!board.isValidGoalPlacement(goalId, getCurrentPlayerColour())) {
         cout << "You cannot build here.\n";
         return false;
     }
 
-    // Check resources
+    // Not enough resources
     if (!getPlayer().spendResource(ResourceType::Study, 1) ||
         !getPlayer().spendResource(ResourceType::Tutorial, 1)) {
 
