@@ -1,6 +1,4 @@
 import <iostream>;
-import <string>;
-
 import Game;
 import CommandParser;
 import CommandExecutor;
@@ -12,13 +10,16 @@ int main() {
     CommandParser parser;
     CommandExecutor exec;
 
-    cout << "Watan Version 3 Loaded.\n";
+    cout << "Watan v4 starting...\n";
 
     string line;
-    while (!game.shouldQuit() && getline(cin, line)) {
+    while (game.isRunning()) {
+        cout << "> ";
+        if (!getline(cin, line)) break;
+
         Command cmd = parser.parse(line);
         exec.execute(cmd, game);
     }
 
-    cout << "Goodbye!\n";
+    cout << "Goodbye.\n";
 }

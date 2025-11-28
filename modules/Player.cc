@@ -1,6 +1,5 @@
 module Player;
 
-import <array>;
 import <iostream>;
 import WatanTypes;
 
@@ -14,19 +13,27 @@ PlayerColour Player::getColour() const {
     return colour;
 }
 
-void Player::addResource(ResourceType r, int amt) {
-    resources[static_cast<int>(r)] += amt;
-}
-
-int Player::getResource(ResourceType r) const {
-    return resources[static_cast<int>(r)];
-}
-
 void Player::printStatus() const {
-    cout << "[Player] Colour=" << static_cast<int>(colour) << "\n";
-    cout << "Resources: ";
-    for (int x : resources) {
-        cout << x << ' ';
-    }
-    cout << "\n";
+    cout << "\n[Player Status]\n";
+    cout << "Colour: " << static_cast<int>(colour) << "\n";
+    cout << "Caffeine: " << resources[0] << "\n";
+    cout << "Lab: " << resources[1] << "\n";
+    cout << "Lecture: " << resources[2] << "\n";
+    cout << "Study: " << resources[3] << "\n";
+    cout << "Tutorial: " << resources[4] << "\n";
+}
+
+void Player::addResource(ResourceType type, int amount) {
+    resources[static_cast<int>(type)] += amount;
+}
+
+bool Player::spendResource(ResourceType type, int amount) {
+    int idx = static_cast<int>(type);
+    if (resources[idx] < amount) return false;
+    resources[idx] -= amount;
+    return true;
+}
+
+int Player::getResource(ResourceType type) const {
+    return resources[static_cast<int>(type)];
 }
