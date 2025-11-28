@@ -1,31 +1,31 @@
 export module Game;
 
 import <memory>;
-import <iostream>;
-
 import Player;
 import Board;
 import RandomGenerator;
 import IDiceStrategy;
 import FairDiceStrategy;
-
-using namespace std;
+import LoadedDiceStrategy;
 
 export class Game {
 public:
     Game();
 
-    bool shouldQuit() const { return quit; }
-    void requestQuit() { quit = true; }
+    bool isRunning() const;
+    void requestQuit();
 
-    void rollDice();
-    Player& getPlayer() { return *player; }
-    Board& getBoard() { return board; }
+    Board& getBoard();
+    Player& getPlayer();
+    int rollDice();
+
+    void setDiceFair();
+    void setDiceLoaded();
 
 private:
     bool quit;
-    unique_ptr<Player> player;
     Board board;
+    Player player;
     RandomGenerator rng;
-    unique_ptr<IDiceStrategy> dice;
+    std::unique_ptr<IDiceStrategy> dice;
 };
