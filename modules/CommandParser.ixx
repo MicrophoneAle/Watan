@@ -2,7 +2,6 @@ export module CommandParser;
 
 import <string>;
 import <sstream>;
-
 using namespace std;
 
 export struct Command {
@@ -13,10 +12,9 @@ export struct Command {
 export class CommandParser {
 public:
     Command parse(const string& line) {
-        Command cmd;
+        Command c;
         stringstream ss(line);
-        ss >> cmd.name;
-        ss >> cmd.arg;
-        return cmd;
+        ss >> c.name >> c.arg;
+        return c;
     }
 };

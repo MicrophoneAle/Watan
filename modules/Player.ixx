@@ -1,21 +1,23 @@
 export module Player;
 
+import <array>;
 import <iostream>;
-import <string>;
+import WatanTypes;
+
 using namespace std;
 
 export class Player {
 public:
-    Player(string name) : name(name) {}
+    Player(PlayerColour c);
 
-    string getName() const {
-        return name; 
-    }
+    PlayerColour getColour() const;
 
-    void printStatus() const {
-        cout << "[Player] " << name << " ready.\n";
-    }
+    void addResource(ResourceType r, int amt);
+    int getResource(ResourceType r) const;
+
+    void printStatus() const;
 
 private:
-    string name;
+    PlayerColour colour;
+    array<int, 5> resources;
 };

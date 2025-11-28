@@ -10,16 +10,15 @@ using namespace std;
 int main() {
     Game game;
     CommandParser parser;
-    CommandExecutor executor;
+    CommandExecutor exec;
 
-    cout << "Watan Version 2 Loaded.\n";
+    cout << "Watan Version 3 Loaded.\n";
 
     string line;
     while (!game.shouldQuit() && getline(cin, line)) {
         Command cmd = parser.parse(line);
-        executor.execute(cmd, game);
+        exec.execute(cmd, game);
     }
 
     cout << "Goodbye!\n";
-    return 0;
 }
