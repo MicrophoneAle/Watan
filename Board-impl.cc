@@ -457,7 +457,7 @@ void Board::display(ostream& out) const {
     auto t = [](int i) { return (i < 10 ? " " : "") + std::to_string(i); };
     auto r = [&](int i) { return tiles[i].getResourceStr(); };
     auto v = [&](int i) {
-        if (i == geeseTileIndex) return std::string(" GE");
+        if (i == geeseTileIndex) return std::string("GE");
         return tiles[i].getValueStr();
         };
 

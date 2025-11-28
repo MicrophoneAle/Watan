@@ -137,10 +137,17 @@ void Game::startInitialPlacement() {
 
 void Game::promptInitialPlacement() {
     if (initialPlacementIndex >= 8) {
+        // Initial placement done
         gamePhase = GamePhase::Normal;
         currentPlayer = 0; // Blue starts
         mustRoll = true;
         hasRolled = false;
+
+        // Print the board after all initial placements
+        cout << "\n--------Initial Placement Complete--------\n";
+        cout << "Here is the starting board:\n\n";
+        board.print();
+        cout << "\n";
 
         startTurnMessage();
         return;
