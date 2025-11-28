@@ -1,30 +1,21 @@
-module Criterion;
+export module Criterion;
 
 import WatanTypes;
 
-Criterion::Criterion() : id{ -1 }, owner{ PlayerColour::None }, level{ 0 } { }
+export class Criterion {
+public:
+    Criterion();
+    Criterion(int id);
 
-Criterion::Criterion(int id) : id{ id }, owner{ PlayerColour::None }, level{ 0 } { }
+    int getId() const;
+    PlayerColour getOwner() const;
+    int getLevel() const;
 
-int Criterion::getId() const {
-    return id;
-}
+    void setOwner(PlayerColour p);
+    void upgrade();
 
-PlayerColour Criterion::getOwner() const {
-    return owner;
-}
-
-int Criterion::getLevel() const {
-    return level;
-}
-
-void Criterion::setOwner(PlayerColour p) {
-    owner = p;
-    level = 1; // Start at assignment level
-}
-
-void Criterion::upgrade() {
-    if (level > 0 && level < 3) {
-        level++;
-    }
-}
+private:
+    int id;
+    PlayerColour owner;
+    int level;
+};

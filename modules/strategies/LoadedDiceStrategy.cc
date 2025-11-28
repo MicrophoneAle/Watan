@@ -1,20 +1,15 @@
-module LoadedDiceStrategy;
+export module LoadedDiceStrategy;
 
-import <iostream>;
-
+import IDiceStrategy;
 import RandomGenerator;
 
-LoadedDiceStrategy::LoadedDiceStrategy() : d1(1), d2(1) { }
+export class LoadedDiceStrategy : public IDiceStrategy {
+public:
+    LoadedDiceStrategy();
+    void setLoadedValues(int a, int b);
 
-void LoadedDiceStrategy::setLoadedValues(int a, int b) {
-    if (a >= 1 && a <= 6) {
-        d1 = a;
-    }
-    if (b >= 1 && b <= 6) {
-        d2 = b;
-    }
-}
+    int roll(RandomGenerator& rng) override;
 
-int LoadedDiceStrategy::roll(RandomGenerator&) {
-    return d1 + d2;
-}
+private:
+    int d1, d2;
+};

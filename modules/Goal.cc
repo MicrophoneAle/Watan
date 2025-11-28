@@ -1,19 +1,17 @@
-module Goal;
+export module Goal;
 
 import WatanTypes;
 
-Goal::Goal() : id{ -1 }, owner{ PlayerColour::None } { }
+export class Goal {
+public:
+    Goal();
+    Goal(int id);
 
-Goal::Goal(int id) : id{ id }, owner{ PlayerColour::None } { }
+    int getId() const;
+    PlayerColour getOwner() const;
+    void setOwner(PlayerColour p);
 
-int Goal::getId() const {
-    return id;
-}
-
-PlayerColour Goal::getOwner() const {
-    return owner;
-}
-
-void Goal::setOwner(PlayerColour p) {
-    owner = p;
-}
+private:
+    int id;
+    PlayerColour owner;
+};

@@ -1,22 +1,17 @@
-module CommandParser;
+export module CommandParser;
 
 import <string>;
+import <vector>;
 import <sstream>;
 
 using namespace std;
 
-Command CommandParser::parse(const string& line) {
-    Command cmd;
-    istringstream iss(line);
+export struct Command {
+    string name;
+    vector<string> args;
+};
 
-    // Get command name
-    iss >> cmd.name;
-
-    // Get all arguments
-    string arg;
-
-    while (iss >> arg) {
-        cmd.args.push_back(arg);
-    }
-    return cmd;
-}
+export class CommandParser {
+public:
+    Command parse(const string& line);
+};

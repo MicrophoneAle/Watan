@@ -1,0 +1,60 @@
+[33m8b9b154[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m Fixed adjacent methods
+[33m7d42e9a[m Documenting Criterion and Game
+[33mb82ae01[m Documenting Board CommandExecutor, CommandLineParser and CommandParser
+[33m90a8bb2[m Implemented command line interface in game and main
+[33mcbed2aa[m Started adding command line parsers
+[33m6470084[m Enabled placement of goals alongside criterion at the beginning of the game
+[33me8cdebb[m Fixed geese formatting
+[33m919e842[m Fixed the adjacency bugs
+[33mde392f8[m Fixed geese formatting issue
+[33m66a61e4[m Adding newlines to the end of files
+[33m2a197fb[m Documenting WatanTypes
+[33m56d5cd0[m Documenting Tile
+[33m851a5fa[m Removing test files
+[33m828514d[m Documenting RandomGenerator
+[33mc275a0b[m Documenting Player
+[33m06c446d[m Documenting main.cc
+[33mf082419[m Documenting LoadedDiceStrategy
+[33md2db557[m Documenting Goal
+[33m56af461[m Documenting Game
+[33m8de5593[m Documenting Criterion
+[33m4846ba8[m Documenting CommandParser
+[33me13dbee[m Documenting CommandExecutor
+[33m0c67b6e[m Documenting Board.ixx
+[33ma37bc1d[m Merge branch 'master' of https://github.com/MicrophoneAle/Watan
+[33m58313b5[m Documenting Board.cc
+[33ma02d3cd[m Merge branch 'master' of https://github.com/MicrophoneAle/Watan
+[33mba4e611[m Deleted several comments
+[33meb7b941[m Deleted unnatural comments
+[33me9cecea[m Trading works now
+[33m76686d1[m Watan kind of works now
+[33me79e315[m Three files left
+[33m896acb8[m Update
+[33m72c34c4[m Merge branch 'master' of https://github.com/MicrophoneAle/Watan
+[33m698c483[m Updates
+[33m20576fd[m Fixed resources to match example board
+[33m752f9f6[m Merge branch 'master' of https://github.com/MicrophoneAle/Watan
+[33m291da24[m Fixed board to display example given
+[33m5d2bfaf[m Now prints resources and criterion at the beginning of turn
+[33m1eaf44f[m Turns work now for one player + board is varied
+[33m6cd6580[m Version 11.1 implement helper function on the board
+[33m56e69d1[m Proper adjacent criterion/road control
+[33m2d4051a[m Added goal and criterion handling
+[33m38e2d5a[m Added resource functions to board
+[33m6376ec5[m Fixed board layout
+[33m0c793f6[m Fixed board layout
+[33m7871eb0[m Added loaded dice
+[33m386f417[m Implemented board
+[33md38607e[m Merged
+[33m3b9b9db[m Implemented dice, more commands, game, player, tile and watan types
+[33m80966f2[m Correct name for Board.cc
+[33me72df29[m Merged partner changes and fixed Board conflict
+[33mac0d417[m Implemented basic Board class and display logic
+[33ma36c495[m Added rudimentary player, board, game
+[33m9591967[m Reduced complexity while adding .ixx files as interfaces
+[33m0cf0605[m Added more comments
+[33m6d4c407[m Created a rudimentary game version that compiles and builds properly
+[33m4da1e68[m Removed Watan.cpp
+[33m06f7063[m Added all the files
+[33m70919d1[m Add project files.
+[33m69a3bcc[m Add .gitattributes and .gitignore.
