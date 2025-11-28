@@ -3,6 +3,7 @@ export module Player;
 import <array>;
 import <vector>;
 import <iostream>;
+import <memory>;
 
 import WatanTypes;
 import IDiceStrategy;
@@ -14,13 +15,21 @@ class Board;
 export class Player {
 public:
     Player(PlayerColour colour);
-    ~Player();
+    ~Player() = default;
+
+    // Delete copy constructor and assignment operator
+    Player(const Player&) = delete;
+    Player& operator=(const Player&) = delete;
+
+    // Default move constructor and assignment
+    Player(Player&&) = default;
+    Player& operator=(Player&&) = default;
 
     // Colour
     PlayerColour getColour() const;
 
-    // Dice strategy
-    void setDiceStrategy(IDiceStrategy* strat);
+    // Dice strategy with smart pointer
+    void setDiceStrategy(std::unique_ptr<IDiceStrategy> strat);
     int rollDice(RandomGenerator& rng);
 
     // Resources
@@ -63,5 +72,5 @@ private:
     int numStudyBuddies;
     bool hasLargestStudyGroup;
     bool hasLongestGoals;
-    IDiceStrategy* diceStrat;
+    std::unique_ptr<IDiceStrategy> diceStrat;
 };

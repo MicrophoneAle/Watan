@@ -136,7 +136,6 @@ int main(int argc, char* argv[]) {
             }
             continue;
         }
-
         Command cmd = parser.parse(line);
         exec.execute(cmd, game);
     }

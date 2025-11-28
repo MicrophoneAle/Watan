@@ -1,7 +1,6 @@
 ﻿CXX = g++-14
 CXXFLAGS = -std=c++20 -fmodules-ts -Wall -g
 COMPILE_HEADER = $(CXX) $(CXXFLAGS) -x c++-system-header -c
-
 EXEC = watan
 
 STDLIB_SENTINEL = .stdlib_precompiled
@@ -13,7 +12,19 @@ all: stdlib modules implementations main link
 stdlib: $(STDLIB_SENTINEL)
 
 $(STDLIB_SENTINEL):
-	$(COMPILE_HEADER) iostream sstream fstream utility random vector map memory string optional array algorithm stdexcept
+	$(COMPILE_HEADER) iostream
+	$(COMPILE_HEADER) sstream
+	$(COMPILE_HEADER) fstream
+	$(COMPILE_HEADER) utility
+	$(COMPILE_HEADER) random
+	$(COMPILE_HEADER) vector
+	$(COMPILE_HEADER) map
+	$(COMPILE_HEADER) memory
+	$(COMPILE_HEADER) string
+	$(COMPILE_HEADER) optional
+	$(COMPILE_HEADER) array
+	$(COMPILE_HEADER) algorithm
+	$(COMPILE_HEADER) stdexcept
 	@touch $(STDLIB_SENTINEL)
 
 modules: $(STDLIB_SENTINEL)

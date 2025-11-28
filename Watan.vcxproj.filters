@@ -153,6 +153,9 @@
     <ClCompile Include="WatanTypes-impl.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LoadedDiceStrategy.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="convert.sh" />

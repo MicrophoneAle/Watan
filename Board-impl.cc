@@ -1,4 +1,4 @@
-﻿ module Board;
+﻿module Board;
 
 import <vector>;
 import <array>;
@@ -210,7 +210,6 @@ vector<int> Board::getAdjacentCriteria(int criterionId) const {
         else if (criteria.second == criterionId) {
             otherCriterion = criteria.first;
         }
-
         if (otherCriterion != -1) {
             // Check if already in adjacent list
             bool found = false;
@@ -328,7 +327,6 @@ bool Board::isValidGoalPlacement(int id, PlayerColour player) const {
     }
 
     // Check if connected to another goal owned by player
-    // A goal is adjacent to another goal if they share a criterion endpoint
     if (it != goalConnections.end()) {
         for (const auto& [otherGoalId, otherCriteria] : goalConnections) {
             if (otherGoalId != id && goals[otherGoalId].getOwner() == player) {
@@ -459,7 +457,7 @@ void Board::display(ostream& out) const {
     auto t = [](int i) { return (i < 10 ? " " : "") + std::to_string(i); };
     auto r = [&](int i) { return tiles[i].getResourceStr(); };
     auto v = [&](int i) {
-        if (i == geeseTileIndex) return std::string(" GEESE");
+        if (i == geeseTileIndex) return std::string(" GE");
         return tiles[i].getValueStr();
         };
 

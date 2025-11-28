@@ -156,6 +156,7 @@
     <ClCompile Include="IDiceStrategy-impl.cc" />
     <ClCompile Include="IDiceStrategy.cc" />
     <ClCompile Include="LoadedDiceStrategy-impl.cc" />
+    <ClCompile Include="LoadedDiceStrategy.cc" />
     <ClCompile Include="main.cc" />
     <ClCompile Include="MonopolyCard-impl.cc" />
     <ClCompile Include="MonopolyCard.cc" />

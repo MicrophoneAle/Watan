@@ -3,6 +3,7 @@ module Player;
 import <iostream>;
 import <vector>;
 import <string>;
+import <memory>;
 
 import WatanTypes;
 import IDiceStrategy;
@@ -24,20 +25,12 @@ Player::Player(PlayerColour colour)
     diceStrat{ nullptr } {
 }
 
-// Destructor
-Player::~Player() {
-    delete diceStrat;
-}
-
 PlayerColour Player::getColour() const {
     return colour;
 }
 
-void Player::setDiceStrategy(IDiceStrategy* strat) {
-    if (diceStrat) {
-        delete diceStrat;
-    }
-    diceStrat = strat;
+void Player::setDiceStrategy(unique_ptr<IDiceStrategy> strat) {
+    diceStrat = std::move(strat);  // Transfer strat ptr ownership
 }
 
 int Player::rollDice(RandomGenerator& rng) {
@@ -127,20 +120,20 @@ void Player::loseRandomResources(int count, RandomGenerator& rng) {
             break;
         }
 
-		// Select random resource to lose
+        // Select random resource to lose
         int idx = rng.getInt(0, static_cast<int>(available.size()) - 1);
         ResourceType toLose = available[idx];
 
-		// Spend the resource on nothing
+        // Spend the resource on nothing
         spendResource(toLose, 1);
-        cout << "  1 " << toString(toLose) << "\n";
+        cout << " 1 " << toString(toLose) << "\n";
     }
 }
 
 ResourceType Player::stealRandomResource(RandomGenerator& rng) {
     vector<ResourceType> available;
 
-	// Gather available resources
+    // Gather available resources
     for (int i = 0; i < 5; i++) {
         if (resources[i] > 0) {
             available.push_back(static_cast<ResourceType>(i));

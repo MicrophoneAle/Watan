@@ -6,6 +6,7 @@ import <array>;
 import <map>;
 import <string>;
 import <vector>;
+import <memory>;
 
 import Player;
 import Board;
@@ -35,16 +36,15 @@ Game::Game()
     players{ Player(PlayerColour::Blue),
              Player(PlayerColour::Red),
              Player(PlayerColour::Orange),
-             Player(PlayerColour::Yellow) },
-    rng(123) {
-    // Set all players to fair dice initially
+             Player(PlayerColour::Yellow) }, rng(123) {
+    // Set all players to fair dice initially using make_unique pointer
     for (auto& player : players) {
-        player.setDiceStrategy(new FairDiceStrategy());
+        player.setDiceStrategy(make_unique<FairDiceStrategy>());
     }
 }
 
 Game::~Game() {
-    // Clean up dice strategies if needed
+    // No manual cleanup needed - smart pointers handle everything
 }
 
 bool Game::isRunning() const {
@@ -137,7 +137,6 @@ void Game::startInitialPlacement() {
 
 void Game::promptInitialPlacement() {
     if (initialPlacementIndex >= 8) {
-        // Initial placement done
         gamePhase = GamePhase::Normal;
         currentPlayer = 0; // Blue starts
         mustRoll = true;
@@ -147,7 +146,7 @@ void Game::promptInitialPlacement() {
         return;
     }
 
-    // Snake order: 0,1,2,3,3,2,1,0
+    // Snaking order: 0,1,2,3,3,2,1,0
     int playerIdx = (initialPlacementIndex < 4)
         ? initialPlacementIndex : (7 - initialPlacementIndex);
 
@@ -187,7 +186,7 @@ bool Game::handleInitialCriterionPlacement(int criterionId) {
     cout << "Student " << toString(getCurrentPlayerColour())
         << " completed criterion " << criterionId << ".\n";
 
-    // Now wait for goal placement
+    // Goal placement
     lastPlacedCriterion = criterionId;
     waitingForInitialGoal = true;
     promptInitialPlacement();
@@ -295,7 +294,6 @@ void Game::nextTurn() {
     currentTurn++;
     mustRoll = true;
     hasRolled = false;
-
     startTurnMessage();
 }
 
@@ -373,7 +371,7 @@ void Game::handleGeese() {
         }
     }
 
-    // Wait for currenet player to place geese
+    // Wait for current player to place geese
     waitingForGeesePlacement = true;
 
     cout << "\nStudent " << toString(getCurrentPlayerColour())
@@ -400,7 +398,7 @@ bool Game::handleGeesePlacement(int tileIndex) {
     board.placeGeese(tileIndex);
     cout << "Geese moved to tile " << tileIndex << ".\n";
 
-    // Find potential victims >:)
+    // Find potential victims
     geeseVictims.clear();
     vector<int> criteriaOnTile = board.getCriteriaOnTile(tileIndex);
 
@@ -556,15 +554,15 @@ bool Game::stealResource(PlayerColour victim) {
     return true;
 }
 
-// SetDice functions
+// SetDice functions - using make_unique
 void Game::setDiceFair() {
-    getPlayer().setDiceStrategy(new FairDiceStrategy());
+    getPlayer().setDiceStrategy(make_unique<FairDiceStrategy>());
     cout << "Dice set to FAIR for student "
         << toString(getCurrentPlayerColour()) << ".\n";
 }
 
 void Game::setDiceLoaded() {
-    getPlayer().setDiceStrategy(new LoadedDiceStrategy());
+    getPlayer().setDiceStrategy(make_unique<LoadedDiceStrategy>());
     cout << "Dice set to LOADED for student "
         << toString(getCurrentPlayerColour()) << ".\n";
 }
@@ -630,13 +628,13 @@ bool Game::improveCriterion(int criterionId) {
     int currentLevel = crit.getLevel();
 
     if (currentLevel >= 3) {
-        cout << "This criterion is already at maximum level (Exam).\n";
+        cout << "This criterion is already at maximum level.\n";
         return false;
     }
 
     // Check resources based on next level
     if (currentLevel == 1) {
-        // Not enough resourses
+        // Not enough resources
         if (!getPlayer().spendResource(ResourceType::Lecture, 2) ||
             !getPlayer().spendResource(ResourceType::Study, 3)) {
 
@@ -657,7 +655,7 @@ bool Game::improveCriterion(int criterionId) {
             << " improved criterion " << criterionId << " to Midterm.\n";
     }
     else if (currentLevel == 2) {
-        // Not enough resourses
+        // Not enough resources
         if (!getPlayer().spendResource(ResourceType::Caffeine, 3) ||
             !getPlayer().spendResource(ResourceType::Lab, 2) ||
             !getPlayer().spendResource(ResourceType::Lecture, 2) ||
@@ -734,7 +732,6 @@ void Game::resetGame() {
 
     // Reset board and players
     board = Board();
-
     players = {
         Player(PlayerColour::Blue),
         Player(PlayerColour::Red),
@@ -742,17 +739,15 @@ void Game::resetGame() {
         Player(PlayerColour::Yellow)
     };
 
+    // Set all players to fair dice using make_unique ptr
     for (auto& player : players) {
-        player.setDiceStrategy(new FairDiceStrategy());
+        player.setDiceStrategy(make_unique<FairDiceStrategy>());
     }
-
     startGame();
 }
 
 bool Game::loadBoard(const string& filename) {
-    // Stub implementation - reads board layout from file
-    // Format: 19 lines, each with: RESOURCE_TYPE VALUE
-    // Example: CAFFEINE 2
+    // Function stub
     cout << "Loading board from file: " << filename << "\n";
     cout << "Board state from " << filename << " would be loaded here.\n";
 
