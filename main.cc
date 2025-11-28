@@ -53,13 +53,24 @@ int main() {
         // Handle initial placement
         if (game.getGamePhase() == GamePhase::InitialPlacement) {
             try {
-                int criterionId = stoi(line);
-                if (!game.handleInitialCriterionPlacement(criterionId)) {
-                    game.promptInitialPlacement();
+                int id = stoi(line);
+
+                // Check if waiting for goal or criterion
+                if (game.isWaitingForInitialGoal()) {
+                    // Placing a goal
+                    if (!game.handleInitialGoalPlacement(id)) {
+                        game.promptInitialPlacement();
+                    }
+                }
+                else {
+                    // Placing a criterion
+                    if (!game.handleInitialCriterionPlacement(id)) {
+                        game.promptInitialPlacement();
+                    }
                 }
             }
             catch (...) {
-                cout << "Invalid input. Enter a criterion number (0-53).\n";
+                cout << "Invalid input. Enter a number.\n";
                 game.promptInitialPlacement();
             }
             continue;

@@ -31,6 +31,7 @@ public:
     bool getHasRolled() const;
     bool isWaitingForGeesePlacement() const;
     bool isWaitingForGeeseSteal() const;
+    bool isWaitingForInitialGoal() const;
 
     // Board access
     Board& getBoard();
@@ -49,6 +50,7 @@ public:
     void startInitialPlacement();
     void promptInitialPlacement();
     bool handleInitialCriterionPlacement(int criterionId);
+    bool handleInitialGoalPlacement(int goalId);
     void startTurnMessage();
     void nextTurn();
     void resetGame();
@@ -81,6 +83,8 @@ private:
     bool quit;
     GamePhase gamePhase;
     int initialPlacementIndex;
+    bool waitingForInitialGoal;
+    int lastPlacedCriterion;
     bool mustRoll;
     bool hasRolled;
     bool waitingForGeesePlacement;

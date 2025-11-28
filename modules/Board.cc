@@ -63,79 +63,82 @@ Board::Board() : geeseTileIndex(4) { // Geese start on netflix tile
 void Board::initializeGoalConnections() {
     goalConnections.clear();
 
-    // Extracted from tile coordinates - each tile has 6 vertices that form edges
-    // These are the correct connections based on the actual hexagonal structure
+    // Correct connections based on Board::display() structure
+    // Each goal connects exactly TWO criteria (vertices)
+    // Traced by following the visual board layout:
+    // - h(goalId) = horizontal goals between adjacent criteria
+    // - d(goalId) = diagonal goals connecting criteria from adjacent rows
 
     goalConnections[0] = { 0, 1 };
-    goalConnections[1] = { 0, 3 };
-    goalConnections[2] = { 1, 4 };
+    goalConnections[1] = { 0, 2 };
+    goalConnections[2] = { 1, 5 };
     goalConnections[3] = { 2, 3 };
-    goalConnections[4] = { 2, 7 };
-    goalConnections[5] = { 3, 8 };
-    goalConnections[6] = { 4, 5 };
+    goalConnections[4] = { 4, 5 };
+    goalConnections[5] = { 2, 6 };
+    goalConnections[6] = { 3, 7 };
     goalConnections[7] = { 4, 9 };
-    goalConnections[8] = { 5, 10 };
+    goalConnections[8] = { 5, 11 };
     goalConnections[9] = { 6, 7 };
-    goalConnections[10] = { 6, 12 };
-    goalConnections[11] = { 7, 13 };
-    goalConnections[12] = { 8, 9 };
-    goalConnections[13] = { 8, 14 };
-    goalConnections[14] = { 9, 15 };
-    goalConnections[15] = { 10, 11 };
+    goalConnections[10] = { 8, 9 };
+    goalConnections[11] = { 10, 11 };
+    goalConnections[12] = { 6, 12 };
+    goalConnections[13] = { 7, 13 };
+    goalConnections[14] = { 8, 14 };
+    goalConnections[15] = { 9, 15 };
     goalConnections[16] = { 10, 16 };
     goalConnections[17] = { 11, 17 };
-    goalConnections[18] = { 12, 18 };
-    goalConnections[19] = { 13, 14 };
-    goalConnections[20] = { 13, 19 };
-    goalConnections[21] = { 14, 20 };
-    goalConnections[22] = { 15, 16 };
+    goalConnections[18] = { 13, 14 };
+    goalConnections[19] = { 15, 16 };
+    goalConnections[20] = { 12, 18 };
+    goalConnections[21] = { 13, 19 };
+    goalConnections[22] = { 14, 20 };
     goalConnections[23] = { 15, 21 };
     goalConnections[24] = { 16, 22 };
     goalConnections[25] = { 17, 23 };
     goalConnections[26] = { 18, 19 };
-    goalConnections[27] = { 18, 24 };
-    goalConnections[28] = { 19, 25 };
-    goalConnections[29] = { 20, 21 };
-    goalConnections[30] = { 20, 26 };
-    goalConnections[31] = { 21, 27 };
-    goalConnections[32] = { 22, 23 };
+    goalConnections[27] = { 20, 21 };
+    goalConnections[28] = { 22, 23 };
+    goalConnections[29] = { 18, 24 };
+    goalConnections[30] = { 19, 25 };
+    goalConnections[31] = { 20, 26 };
+    goalConnections[32] = { 21, 27 };
     goalConnections[33] = { 22, 28 };
     goalConnections[34] = { 23, 29 };
-    goalConnections[35] = { 24, 30 };
-    goalConnections[36] = { 25, 26 };
-    goalConnections[37] = { 25, 31 };
-    goalConnections[38] = { 26, 32 };
-    goalConnections[39] = { 27, 28 };
+    goalConnections[35] = { 25, 26 };
+    goalConnections[36] = { 27, 28 };
+    goalConnections[37] = { 24, 30 };
+    goalConnections[38] = { 25, 31 };
+    goalConnections[39] = { 26, 32 };
     goalConnections[40] = { 27, 33 };
     goalConnections[41] = { 28, 34 };
     goalConnections[42] = { 29, 35 };
     goalConnections[43] = { 30, 31 };
-    goalConnections[44] = { 30, 36 };
-    goalConnections[45] = { 31, 37 };
-    goalConnections[46] = { 32, 33 };
-    goalConnections[47] = { 32, 38 };
-    goalConnections[48] = { 33, 39 };
-    goalConnections[49] = { 34, 35 };
+    goalConnections[44] = { 32, 33 };
+    goalConnections[45] = { 34, 35 };
+    goalConnections[46] = { 30, 36 };
+    goalConnections[47] = { 31, 37 };
+    goalConnections[48] = { 32, 38 };
+    goalConnections[49] = { 33, 39 };
     goalConnections[50] = { 34, 40 };
     goalConnections[51] = { 35, 41 };
-    goalConnections[52] = { 36, 42 };
-    goalConnections[53] = { 37, 38 };
-    goalConnections[54] = { 37, 43 };
-    goalConnections[55] = { 38, 44 };
-    goalConnections[56] = { 39, 40 };
+    goalConnections[52] = { 37, 38 };
+    goalConnections[53] = { 39, 40 };
+    goalConnections[54] = { 36, 42 };
+    goalConnections[55] = { 37, 43 };
+    goalConnections[56] = { 38, 44 };
     goalConnections[57] = { 39, 45 };
     goalConnections[58] = { 40, 46 };
     goalConnections[59] = { 41, 47 };
     goalConnections[60] = { 42, 43 };
-    goalConnections[61] = { 43, 48 };
-    goalConnections[62] = { 44, 45 };
-    goalConnections[63] = { 44, 49 };
-    goalConnections[64] = { 45, 50 };
-    goalConnections[65] = { 46, 47 };
+    goalConnections[61] = { 44, 45 };
+    goalConnections[62] = { 46, 47 };
+    goalConnections[63] = { 43, 48 };
+    goalConnections[64] = { 44, 49 };
+    goalConnections[65] = { 45, 50 };
     goalConnections[66] = { 46, 51 };
     goalConnections[67] = { 48, 49 };
-    goalConnections[68] = { 49, 52 };
-    goalConnections[69] = { 50, 51 };
+    goalConnections[68] = { 50, 51 };
+    goalConnections[69] = { 49, 52 };
     goalConnections[70] = { 50, 53 };
     goalConnections[71] = { 52, 53 };
 }
@@ -442,7 +445,7 @@ void Board::display(ostream& out) const {
     auto t = [](int i) { return (i < 10 ? " " : "") + std::to_string(i); };
     auto r = [&](int i) { return tiles[i].getResourceStr(); };
     auto v = [&](int i) {
-        if (i == geeseTileIndex) return std::string(" GE");
+        if (i == geeseTileIndex) return std::string(" GEESE");
         return tiles[i].getValueStr();
         };
 

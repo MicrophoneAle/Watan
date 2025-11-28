@@ -21,6 +21,8 @@ Game::Game()
     : quit(false),
     gamePhase(GamePhase::InitialPlacement),
     initialPlacementIndex(0),
+    waitingForInitialGoal(false),
+    lastPlacedCriterion(-1),
     mustRoll(false),
     hasRolled(false),
     currentTurn(1),
@@ -105,9 +107,14 @@ bool Game::isWaitingForGeeseSteal() const {
     return waitingForGeeseSteal;
 }
 
+bool Game::isWaitingForInitialGoal() const {
+    return waitingForInitialGoal;
+}
+
 void Game::startGame() {
     cout << "\n=== Welcome to Students of Watan ===\n\n";
     cout << "Initial placement phase:\n";
+    cout << "Each student places 1 criterion and 1 goal.\n";
     cout << "Order: Blue, Red, Orange, Yellow, Yellow, Orange, Red, Blue\n\n";
 
     startInitialPlacement();
@@ -116,6 +123,8 @@ void Game::startGame() {
 void Game::startInitialPlacement() {
     gamePhase = GamePhase::InitialPlacement;
     initialPlacementIndex = 0;
+    waitingForInitialGoal = false;
+    lastPlacedCriterion = -1;
 
     promptInitialPlacement();
 }
@@ -133,19 +142,30 @@ void Game::promptInitialPlacement() {
     }
 
     // Snake order: 0,1,2,3, 3,2,1,0
-    int playerIdx = (initialPlacementIndex < 4) 
+    int playerIdx = (initialPlacementIndex < 4)
         ? initialPlacementIndex : (7 - initialPlacementIndex);
 
     currentPlayer = playerIdx;
 
-    cout << "\nStudent " << toString(players[playerIdx].getColour())
-        << ", where do you want to complete an Assignment?\n";
+    if (waitingForInitialGoal) {
+        cout << "\nStudent " << toString(players[playerIdx].getColour())
+            << ", where do you want to achieve a goal?\n";
+    }
+    else {
+        cout << "\nStudent " << toString(players[playerIdx].getColour())
+            << ", where do you want to complete an Assignment?\n";
+    }
     cout << "> ";
 }
 
 bool Game::handleInitialCriterionPlacement(int criterionId) {
     if (gamePhase != GamePhase::InitialPlacement) {
         cout << "Not in initial placement phase.\n";
+        return false;
+    }
+
+    if (waitingForInitialGoal) {
+        cout << "You must place a goal first.\n";
         return false;
     }
 
@@ -163,7 +183,61 @@ bool Game::handleInitialCriterionPlacement(int criterionId) {
     cout << "Student " << toString(getCurrentPlayerColour())
         << " completed criterion " << criterionId << ".\n";
 
+    // Now wait for goal placement
+    lastPlacedCriterion = criterionId;
+    waitingForInitialGoal = true;
+    promptInitialPlacement();
+
+    return true;
+}
+
+bool Game::handleInitialGoalPlacement(int goalId) {
+    if (gamePhase != GamePhase::InitialPlacement) {
+        cout << "Not in initial placement phase.\n";
+        return false;
+    }
+
+    if (!waitingForInitialGoal) {
+        cout << "You must place a criterion first.\n";
+        return false;
+    }
+
+    // Check if goal is adjacent to the criterion just placed
+    bool isAdjacent = false;
+    vector<int> adjacentGoals = board.getAdjacentGoals(lastPlacedCriterion);
+
+    for (int adjGoal : adjacentGoals) {
+        if (adjGoal == goalId) {
+            isAdjacent = true;
+            break;
+        }
+    }
+
+    if (!isAdjacent) {
+        cout << "Goal must be adjacent to the criterion you just placed (criterion "
+            << lastPlacedCriterion << ").\n";
+        return false;
+    }
+
+    if (board.getGoals()[goalId].getOwner() != PlayerColour::None) {
+        cout << "That goal is already achieved.\n";
+        return false;
+    }
+
+    // Update board
+    board.getGoals()[goalId].setOwner(getCurrentPlayerColour());
+
+    // Update player
+    getPlayer().addGoal(goalId);
+
+    cout << "Student " << toString(getCurrentPlayerColour())
+        << " achieved goal " << goalId << ".\n";
+
+    // Move to next placement
+    waitingForInitialGoal = false;
+    lastPlacedCriterion = -1;
     initialPlacementIndex++;
+
     promptInitialPlacement();
 
     return true;
@@ -652,6 +726,8 @@ void Game::resetGame() {
     quit = false;
     gamePhase = GamePhase::InitialPlacement;
     initialPlacementIndex = 0;
+    waitingForInitialGoal = false;
+    lastPlacedCriterion = -1;
     mustRoll = false;
     hasRolled = false;
     waitingForGeesePlacement = false;
