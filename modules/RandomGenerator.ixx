@@ -1,6 +1,7 @@
 export module RandomGenerator;
 
 import <random>;
+
 using namespace std;
 
 export class RandomGenerator {
