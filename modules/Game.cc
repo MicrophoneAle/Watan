@@ -24,6 +24,8 @@ Game::Game()
     hasRolled(false),
     currentTurn(1),
     currentPlayer(0),
+    waitingForGeesePlacement(false),
+    waitingForGeeseSteal(false),
     board(),
     players{ Player(PlayerColour::Blue),
              Player(PlayerColour::Red),
@@ -93,6 +95,14 @@ bool Game::getMustRoll() const {
 
 bool Game::getHasRolled() const {
     return hasRolled;
+}
+
+bool Game::isWaitingForGeesePlacement() const {
+    return waitingForGeesePlacement;
+}
+
+bool Game::isWaitingForGeeseSteal() const {
+    return waitingForGeeseSteal;
 }
 
 void Game::startGame() {
@@ -285,29 +295,38 @@ void Game::handleGeese() {
         }
     }
 
-    // Step 2: Current player moves geese
+    // Step 2: Set state to wait for geese placement
+    waitingForGeesePlacement = true;
+
     cout << "\nStudent " << toString(getCurrentPlayerColour())
         << ", choose where to place the GEESE (tile 0-18, not "
         << board.getGeeseTileIndex() << "):\n";
     cout << "> ";
 }
 
-bool Game::moveGeese(int tileIndex) {
+bool Game::handleGeesePlacement(int tileIndex) {
+    if (!waitingForGeesePlacement) {
+        cout << "Not waiting for geese placement.\n";
+        return false;
+    }
+
     if (tileIndex < 0 || tileIndex >= 19) {
-        cout << "Invalid tile index.\n";
+        cout << "Invalid tile index. Enter a number from 0 to 18.\n";
+        cout << "> ";
         return false;
     }
 
     if (tileIndex == board.getGeeseTileIndex()) {
-        cout << "Geese are already on that tile.\n";
+        cout << "Geese are already on that tile. Choose a different tile.\n";
+        cout << "> ";
         return false;
     }
 
     board.placeGeese(tileIndex);
     cout << "Geese moved to tile " << tileIndex << ".\n";
 
-    // Step 3: Steal from a player on that tile
-    vector<PlayerColour> victims;
+    // Step 3: Find potential victims
+    geeseVictims.clear();
     vector<int> criteriaOnTile = board.getCriteriaOnTile(tileIndex);
 
     for (int critId : criteriaOnTile) {
@@ -315,36 +334,110 @@ bool Game::moveGeese(int tileIndex) {
         if (crit.getLevel() > 0 && crit.getOwner() != getCurrentPlayerColour()) {
             int victimIdx = static_cast<int>(crit.getOwner()) - 1;
             if (victimIdx >= 0 && victimIdx < 4 && players[victimIdx].getTotalResources() > 0) {
-                // Add if not already in list (manual replacement for std::find)
+                // Add if not already in list
                 bool found = false;
-                for (PlayerColour v : victims) {
+                for (PlayerColour v : geeseVictims) {
                     if (v == crit.getOwner()) {
                         found = true;
                         break;
                     }
                 }
                 if (!found) {
-                    victims.push_back(crit.getOwner());
+                    geeseVictims.push_back(crit.getOwner());
                 }
             }
         }
     }
 
-    if (victims.empty()) {
+    waitingForGeesePlacement = false;
+
+    if (geeseVictims.empty()) {
         cout << "Student " << toString(getCurrentPlayerColour())
             << " has no students to steal from.\n";
         return true;
     }
 
+    // Now wait for steal choice
+    waitingForGeeseSteal = true;
+
     cout << "Student " << toString(getCurrentPlayerColour())
         << " can choose to steal from: ";
-    for (size_t i = 0; i < victims.size(); i++) {
+    for (size_t i = 0; i < geeseVictims.size(); i++) {
         if (i > 0) cout << ", ";
-        cout << toString(victims[i]);
+        cout << toString(geeseVictims[i]);
     }
     cout << "\nChoose a student to steal from:\n> ";
 
     return true;
+}
+
+bool Game::handleGeeseSteal(const string& colourName) {
+    if (!waitingForGeeseSteal) {
+        cout << "Not waiting for geese steal.\n";
+        return false;
+    }
+
+    // Parse colour
+    PlayerColour victim = PlayerColour::None;
+    string lower = colourName;
+    for (char& c : lower) c = tolower(c);
+
+    if (lower == "blue") victim = PlayerColour::Blue;
+    else if (lower == "red") victim = PlayerColour::Red;
+    else if (lower == "orange") victim = PlayerColour::Orange;
+    else if (lower == "yellow") victim = PlayerColour::Yellow;
+
+    if (victim == PlayerColour::None) {
+        cout << "Invalid colour. Choose from: ";
+        for (size_t i = 0; i < geeseVictims.size(); i++) {
+            if (i > 0) cout << ", ";
+            cout << toString(geeseVictims[i]);
+        }
+        cout << "\n> ";
+        return false;
+    }
+
+    // Check if victim is in the list
+    bool validVictim = false;
+    for (PlayerColour v : geeseVictims) {
+        if (v == victim) {
+            validVictim = true;
+            break;
+        }
+    }
+
+    if (!validVictim) {
+        cout << "You can only steal from: ";
+        for (size_t i = 0; i < geeseVictims.size(); i++) {
+            if (i > 0) cout << ", ";
+            cout << toString(geeseVictims[i]);
+        }
+        cout << "\n> ";
+        return false;
+    }
+
+    // Steal the resource
+    int victimIdx = static_cast<int>(victim) - 1;
+    ResourceType stolen = players[victimIdx].stealRandomResource(rng);
+
+    if (stolen == ResourceType::Netflix) {
+        cout << "Student " << toString(victim) << " has no resources to steal.\n";
+    }
+    else {
+        getPlayer().addResource(stolen, 1);
+        cout << "Student " << toString(getCurrentPlayerColour())
+            << " steals " << toString(stolen)
+            << " from student " << toString(victim) << ".\n";
+    }
+
+    waitingForGeeseSteal = false;
+    geeseVictims.clear();
+
+    return true;
+}
+
+bool Game::moveGeese(int tileIndex) {
+    return handleGeesePlacement(tileIndex);
 }
 
 bool Game::stealResource(PlayerColour victim) {
@@ -530,8 +623,11 @@ void Game::resetGame() {
     initialPlacementIndex = 0;
     mustRoll = false;
     hasRolled = false;
+    waitingForGeesePlacement = false;
+    waitingForGeeseSteal = false;
     currentTurn = 1;
     currentPlayer = 0;
+    geeseVictims.clear();
 
     // Reset board and players
     board = Board();
@@ -563,15 +659,6 @@ bool Game::loadGame(const string& filename) {
 
     cout << "Load functionality requires fstream (not available).\n";
     cout << "Game state from " << filename << " would be loaded here.\n";
-
-    // If we had fstream, after loading each player with:
-    // player.load(in, nullptr);
-
-    // We would manually update the board:
-    // for (int i = 0; i < 4; i++) {
-    //     // Get each player's completed criteria and update board
-    //     // Get each player's achieved goals and update board
-    // }
 
     return false;
 }

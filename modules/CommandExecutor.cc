@@ -2,6 +2,7 @@ module CommandExecutor;
 
 import <iostream>;
 import <sstream>;
+import <string>;
 import CommandParser;
 import Game;
 import Player;
@@ -98,13 +99,14 @@ void CommandExecutor::execute(const Command& cmd, Game& game) {
     else if (cmd.name == "trade") {
         if (cmd.args.size() < 3) {
             cout << "Usage: trade <colour> <give> <take>\n";
+            cout << "Example: trade Yellow Lab Study\n";
             return;
         }
 
         // Parse colour
         PlayerColour target = parseColour(cmd.args[0]);
         if (target == PlayerColour::None) {
-            cout << "Invalid player colour.\n";
+            cout << "Invalid player colour. Use: Blue, Red, Orange, or Yellow\n";
             return;
         }
 
@@ -114,6 +116,7 @@ void CommandExecutor::execute(const Command& cmd, Game& game) {
 
         if (give == ResourceType::Netflix || take == ResourceType::Netflix) {
             cout << "Invalid resource type.\n";
+            cout << "Valid resources: Caffeine, Lab, Lecture, Study, Tutorial\n";
             return;
         }
 
@@ -127,46 +130,8 @@ void CommandExecutor::execute(const Command& cmd, Game& game) {
 
         game.saveGame(cmd.args[0]);
     }
-    else if (cmd.name == "load_game") {
-        if (cmd.args.empty()) {
-            cout << "Usage: load_game <filename>\n";
-            return;
-        }
-
-        game.loadGame(cmd.args[0]);
-    }
     else if (cmd.name == "quit") {
         game.requestQuit();
-    }
-    else if (cmd.name == "geese") {
-        // Handle geese placement during 7 roll
-        if (cmd.args.empty()) {
-            cout << "Usage: geese <tile>\n";
-            return;
-        }
-
-        try {
-            int tile = stoi(cmd.args[0]);
-            game.moveGeese(tile);
-        }
-        catch (...) {
-            cout << "Invalid tile number.\n";
-        }
-    }
-    else if (cmd.name == "steal") {
-        // Handle stealing after geese placement
-        if (cmd.args.empty()) {
-            cout << "Usage: steal <colour>\n";
-            return;
-        }
-
-        PlayerColour victim = parseColour(cmd.args[0]);
-        if (victim == PlayerColour::None) {
-            cout << "Invalid player colour.\n";
-            return;
-        }
-
-        game.stealResource(victim);
     }
     else {
         cout << "Invalid command.\n";
@@ -189,16 +154,23 @@ ResourceType CommandExecutor::parseResource(const string& str) const {
     string lower = str;
     for (char& c : lower) c = tolower(c);
 
-    if (lower == "caffeine") return ResourceType::Caffeine;
-    if (lower == "lab") return ResourceType::Lab;
-    if (lower == "lecture") return ResourceType::Lecture;
-    if (lower == "study") return ResourceType::Study;
-    if (lower == "tutorial") return ResourceType::Tutorial;
+    // Support both singular and plural forms
+    if (lower == "caffeine" || lower == "caffeines") return ResourceType::Caffeine;
+    if (lower == "lab" || lower == "labs") return ResourceType::Lab;
+    if (lower == "lecture" || lower == "lectures") return ResourceType::Lecture;
+    if (lower == "study" || lower == "studies") return ResourceType::Study;
+    if (lower == "tutorial" || lower == "tutorials") return ResourceType::Tutorial;
 
     return ResourceType::Netflix;
 }
 
 void CommandExecutor::executeTrade(Game& game, PlayerColour target, ResourceType give, ResourceType take) {
+    // Check if trying to trade with self
+    if (target == game.getCurrentPlayerColour()) {
+        cout << "You cannot trade with yourself.\n";
+        return;
+    }
+
     // Get target player index
     int targetIdx = static_cast<int>(target) - 1;
     if (targetIdx < 0 || targetIdx >= 4) {
@@ -211,13 +183,13 @@ void CommandExecutor::executeTrade(Game& game, PlayerColour target, ResourceType
 
     // Check if current player has the resource to give
     if (currentPlayer.getResource(give) < 1) {
-        cout << "You do not have enough resources.\n";
+        cout << "You do not have enough " << toString(give) << ".\n";
         return;
     }
 
-    // Check if target player has the resource to give
+    // Check if target player has the resource to give back
     if (targetPlayer.getResource(take) < 1) {
-        cout << toString(target) << " does not have that resource.\n";
+        cout << toString(target) << " does not have any " << toString(take) << ".\n";
         return;
     }
 
@@ -225,19 +197,24 @@ void CommandExecutor::executeTrade(Game& game, PlayerColour target, ResourceType
     cout << toString(game.getCurrentPlayerColour()) << " offers "
         << toString(target) << " one " << toString(give)
         << " for one " << toString(take) << ".\n";
-    cout << "Does " << toString(target) << " accept this offer?\n";
+    cout << "Does " << toString(target) << " accept this offer? (yes/no)\n";
     cout << "> ";
 
     string response;
     if (!(cin >> response)) {
         cout << "Invalid response.\n";
+        cin.clear();
+        cin.ignore(10000, '\n');
         return;
     }
+
+    // Clear the rest of the line
+    cin.ignore(10000, '\n');
 
     string lower = response;
     for (char& c : lower) c = tolower(c);
 
-    if (lower == "yes") {
+    if (lower == "yes" || lower == "y") {
         // Execute trade
         currentPlayer.spendResource(give, 1);
         currentPlayer.addResource(take, 1);
@@ -245,9 +222,11 @@ void CommandExecutor::executeTrade(Game& game, PlayerColour target, ResourceType
         targetPlayer.spendResource(take, 1);
         targetPlayer.addResource(give, 1);
 
-        cout << "Trade completed.\n";
+        cout << "Trade completed!\n";
+        cout << toString(game.getCurrentPlayerColour()) << " gave 1 " << toString(give)
+            << " and received 1 " << toString(take) << ".\n";
     }
     else {
-        cout << "Trade declined.\n";
+        cout << toString(target) << " declined the trade.\n";
     }
 }

@@ -2,6 +2,7 @@
 import <array>;
 import <memory>;
 import <string>;
+import <vector>;
 import Player;
 import Board;
 import RandomGenerator;
@@ -24,6 +25,8 @@ public:
     GamePhase getGamePhase() const;
     bool getMustRoll() const;
     bool getHasRolled() const;
+    bool isWaitingForGeesePlacement() const;
+    bool isWaitingForGeeseSteal() const;
 
     // Board access
     Board& getBoard();
@@ -58,6 +61,8 @@ public:
 
     // Geese
     void handleGeese();
+    bool handleGeesePlacement(int tileIndex);
+    bool handleGeeseSteal(const std::string& colourName);
     bool moveGeese(int tileIndex);
     bool stealResource(PlayerColour victim);
 
@@ -74,9 +79,12 @@ private:
     int initialPlacementIndex;
     bool mustRoll;
     bool hasRolled;
+    bool waitingForGeesePlacement;
+    bool waitingForGeeseSteal;
     int currentTurn;
     int currentPlayer;
     Board board;
     std::array<Player, 4> players;
     RandomGenerator rng;
+    std::vector<PlayerColour> geeseVictims;
 };
