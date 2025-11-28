@@ -1,8 +1,10 @@
 export module Board;
+
 import <vector>;
 import <array>;
 import <iostream>;
 import <map>;
+
 import Tile;
 import Criterion;
 import Goal;
@@ -54,7 +56,7 @@ private:
     std::vector<std::array<int, 6>> tileCoords;
     int geeseTileIndex;
 
-    // internal helpers
+    // Adjacent helpers
     bool adjacentCriterionExists(int id) const;
 };
 
