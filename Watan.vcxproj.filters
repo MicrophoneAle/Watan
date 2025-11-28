@@ -27,9 +27,6 @@
     <ClCompile Include="modules\Criterion.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\Error.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="modules\Game.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -40,9 +37,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="modules\RandomGenerator.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\SaveLoad.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="modules\Tile.cc">

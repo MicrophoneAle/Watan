@@ -2,7 +2,10 @@ export module CourseCriteriaCard;
 
 import EventCard;
 
-export class CourseCriteriaCard : public EventCard {
-public:
-    void apply(Player& player, Game& game) override;
-};
+using std::cout;
+using std::endl;
+
+void CourseCriteriaCard::apply(Player& /*player*/, Game& /*game*/) {
+    // Version 9 stub: later this will grant 1 course-criterion point immediately.
+    cout << "[CourseCriteriaCard] Effect not implemented yet." << endl;
+}
