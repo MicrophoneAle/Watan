@@ -344,7 +344,7 @@ void Board::display(ostream& out) const {
     auto d = [this](int i) { return getGoalDisplay(i); };
     auto t = [](int i) { return (i < 10 ? " " : "") + std::to_string(i); };
     auto r = [&](int i) { return tiles[i].getResourceStr(); };
-    auto v = [&](int i) { if (i == geeseTileIndex) return std::string(" GEESE");
+    auto v = [&](int i) { if (i == geeseTileIndex) return std::string(" GE");
         return tiles[i].getValueStr(); };
 
     const std::string S1 = "   ";
