@@ -128,7 +128,7 @@ void Player::loseRandomResources(int count, RandomGenerator& rng) {
         }
 
 		// Select random resource to lose
-        int idx = rng.intInRange(0, static_cast<int>(available.size()) - 1);
+        int idx = rng.getInt(0, static_cast<int>(available.size()) - 1);
         ResourceType toLose = available[idx];
 
 		// Spend the resource on nothing
@@ -151,7 +151,7 @@ ResourceType Player::stealRandomResource(RandomGenerator& rng) {
         return ResourceType::Netflix;
     }
 
-    int idx = rng.intInRange(0, static_cast<int>(available.size()) - 1);
+    int idx = rng.getInt(0, static_cast<int>(available.size()) - 1);
     ResourceType stolen = available[idx];
     spendResource(stolen, 1);
 

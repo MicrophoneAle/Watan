@@ -6,11 +6,13 @@ using namespace std;
 
 export class RandomGenerator {
 public:
-    RandomGenerator() : engine(random_device{}()) {}
-    RandomGenerator(unsigned int seed) : engine(seed) {}
+    RandomGenerator(unsigned int seed = 0);
 
-    int intInRange(int low, int high);
+    void setSeed(unsigned int seed);
+    int getInt(int min, int max);
+
+     
 
 private:
-    default_random_engine engine;
+    mt19937 rng;
 };
