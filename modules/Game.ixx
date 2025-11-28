@@ -1,53 +1,82 @@
 ﻿export module Game;
-
 import <array>;
 import <memory>;
+import <string>;
 import Player;
 import Board;
 import RandomGenerator;
-import IDiceStrategy;
-import FairDiceStrategy;
-import LoadedDiceStrategy;
 import WatanTypes;
+
+export enum class GamePhase {
+    InitialPlacement,
+    Normal,
+    GameOver
+};
 
 export class Game {
 public:
     Game();
+    ~Game();
 
-    // Loop control
+    // Game state
     bool isRunning() const;
     void requestQuit();
+    GamePhase getGamePhase() const;
+    bool getMustRoll() const;
+    bool getHasRolled() const;
 
     // Board access
     Board& getBoard();
+    const Board& getBoard() const;
 
     // Player access
     Player& getPlayer();
     const Player& getPlayer() const;
-
     Player& getPlayer(int index);
     const Player& getPlayer(int index) const;
-
     int getCurrentPlayerIndex() const;
     PlayerColour getCurrentPlayerColour() const;
 
-    // Turn flow
+    // Game flow
+    void startGame();
+    void startInitialPlacement();
+    void promptInitialPlacement();
+    bool handleInitialCriterionPlacement(int criterionId);
     void startTurnMessage();
     void nextTurn();
+    void resetGame();
 
     // Dice
     int rollDice();
     void setDiceFair();
     void setDiceLoaded();
 
+    // Actions
+    bool completeCriterion(int criterionId);
+    bool improveCriterion(int criterionId);
+    bool achieveGoal(int goalId);
+
+    // Geese
+    void handleGeese();
+    bool moveGeese(int tileIndex);
+    bool stealResource(PlayerColour victim);
+
+    // Resources
+    void distributeResources(int roll);
+
+    // Save/Load
+    bool saveGame(const std::string& filename) const;
+    bool loadGame(const std::string& filename);
+
 private:
     bool quit;
+    GamePhase gamePhase;
+    int initialPlacementIndex;
+    bool mustRoll;
+    bool hasRolled;
     int currentTurn;
     int currentPlayer;
-
     Board board;
     std::array<Player, 4> players;
-
     RandomGenerator rng;
-    std::unique_ptr<IDiceStrategy> dice;
 };

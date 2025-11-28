@@ -1,16 +1,28 @@
-// ===== Player.cc =====
 module Player;
 
 import <iostream>;
+import <algorithm>;
+import <fstream>;
+import <sstream>;
 import WatanTypes;
 import IDiceStrategy;
 import RandomGenerator;
+import Board;
+
+using namespace std;
 
 Player::Player(PlayerColour colour)
     : colour{ colour },
     resources{ 0,0,0,0,0 },
     numCourseCriteria{ 0 },
+    numStudyBuddies{ 0 },
+    hasLargestStudyGroup{ false },
+    hasLongestGoals{ false },
     diceStrat{ nullptr } {
+}
+
+Player::~Player() {
+    delete diceStrat;
 }
 
 PlayerColour Player::getColour() const {
@@ -18,6 +30,7 @@ PlayerColour Player::getColour() const {
 }
 
 void Player::setDiceStrategy(IDiceStrategy* strat) {
+    if (diceStrat) delete diceStrat;
     diceStrat = strat;
 }
 
@@ -27,7 +40,7 @@ int Player::rollDice(RandomGenerator& rng) {
 }
 
 void Player::addResource(ResourceType type, int amount) {
-    if (type == ResourceType::Netflix) return;  // not stored
+    if (type == ResourceType::Netflix) return;
     int idx = static_cast<int>(type);
     if (idx >= 0 && idx < 5) resources[idx] += amount;
 }
@@ -48,16 +61,71 @@ int Player::getResource(ResourceType type) const {
     return resources[idx];
 }
 
-void Player::addCriterion(int criterionId) {
-    // Level 1 = Assignment
+int Player::getTotalResources() const {
+    int total = 0;
+    for (int r : resources) total += r;
+    return total;
+}
+
+void Player::loseRandomResources(int count, RandomGenerator& rng) {
+    int totalRes = getTotalResources();
+    if (totalRes == 0 || count <= 0) return;
+
+    cout << "They lose:\n";
+
+    for (int i = 0; i < count && getTotalResources() > 0; i++) {
+        // Pick a random resource type to lose
+        vector<ResourceType> available;
+        for (int j = 0; j < 5; j++) {
+            if (resources[j] > 0) {
+                available.push_back(static_cast<ResourceType>(j));
+            }
+        }
+
+        if (available.empty()) break;
+
+        int idx = rng.intInRange(0, available.size() - 1);
+        ResourceType toLose = available[idx];
+
+        spendResource(toLose, 1);
+        cout << "  1 " << toString(toLose) << "\n";
+    }
+}
+
+ResourceType Player::stealRandomResource(RandomGenerator& rng) {
+    vector<ResourceType> available;
+    for (int i = 0; i < 5; i++) {
+        if (resources[i] > 0) {
+            available.push_back(static_cast<ResourceType>(i));
+        }
+    }
+
+    if (available.empty()) return ResourceType::Netflix;
+
+    int idx = rng.intInRange(0, available.size() - 1);
+    ResourceType stolen = available[idx];
+    spendResource(stolen, 1);
+
+    return stolen;
+}
+
+void Player::addCriterion(int criterionId, Board* board) {
+    // Check if already have this criterion
+    for (const auto& p : completedCriteria) {
+        if (p.first == criterionId) return;
+    }
+
     completedCriteria.push_back({ criterionId, 1 });
-    numCourseCriteria++;
+    recalculateCourseCriteria();
 }
 
 void Player::improveCriterion(int criterionId) {
     for (auto& p : completedCriteria) {
         if (p.first == criterionId) {
-            if (p.second < 3) p.second++;
+            if (p.second < 3) {
+                p.second++;
+                recalculateCourseCriteria();
+            }
             return;
         }
     }
@@ -65,10 +133,48 @@ void Player::improveCriterion(int criterionId) {
 
 void Player::addGoal(int goalId) {
     achievedGoals.push_back(goalId);
+    recalculateCourseCriteria();
+}
+
+void Player::recalculateCourseCriteria() {
+    numCourseCriteria = 0;
+
+    // Count from criteria (each criterion = 1)
+    numCourseCriteria += completedCriteria.size();
+
+    // Add bonuses
+    if (hasLargestStudyGroup) numCourseCriteria += 2;
+    if (hasLongestGoals) numCourseCriteria += 2;
 }
 
 int Player::getCourseCriteria() const {
     return numCourseCriteria;
+}
+
+void Player::addStudyBuddy() {
+    numStudyBuddies++;
+}
+
+int Player::getStudyBuddies() const {
+    return numStudyBuddies;
+}
+
+void Player::setLargestStudyGroup(bool has) {
+    hasLargestStudyGroup = has;
+    recalculateCourseCriteria();
+}
+
+void Player::setLongestGoals(bool has) {
+    hasLongestGoals = has;
+    recalculateCourseCriteria();
+}
+
+bool Player::getLargestStudyGroup() const {
+    return hasLargestStudyGroup;
+}
+
+bool Player::getLongestGoals() const {
+    return hasLongestGoals;
 }
 
 void Player::printCriteria(std::ostream& out) const {
@@ -76,22 +182,88 @@ void Player::printCriteria(std::ostream& out) const {
         out << "  No criteria completed.\n";
         return;
     }
-    out << "  Completed Criteria:\n";
+
+    out << toString(colour) << " has completed:\n";
     for (const auto& p : completedCriteria) {
-        out << "    Criterion " << p.first
-            << " (Level " << p.second << ")\n";
+        out << p.first << " " << p.second << "\n";
     }
 }
 
 void Player::printStatus(std::ostream& out) const {
-    out << "Player " << toString(colour) << ":\n";
-    out << "  Resources:\n";
-    out << "    Caffeine: " << resources[0] << "\n";
-    out << "    Lab:      " << resources[1] << "\n";
-    out << "    Lecture:  " << resources[2] << "\n";
-    out << "    Study:    " << resources[3] << "\n";
-    out << "    Tutorial: " << resources[4] << "\n";
-    out << "  Criteria Count: " << numCourseCriteria << "\n";
+    out << toString(colour) << " has " << numCourseCriteria << " course criteria, "
+        << resources[0] << " caffeines, "
+        << resources[1] << " labs, "
+        << resources[2] << " lectures, "
+        << resources[3] << " studies, and "
+        << resources[4] << " tutorials.\n";
+}
 
-    printCriteria(out);
+void Player::save(std::ostream& out) const {
+    // Resources
+    for (int i = 0; i < 5; i++) {
+        out << resources[i] << " ";
+    }
+
+    // Goals
+    out << "g ";
+    for (int goalId : achievedGoals) {
+        out << goalId << " ";
+    }
+
+    // Criteria
+    out << "c ";
+    for (const auto& [id, level] : completedCriteria) {
+        out << id << " " << level << " ";
+    }
+
+    out << "\n";
+}
+
+void Player::load(std::istream& in, Board* board) {
+    // Load resources
+    for (int i = 0; i < 5; i++) {
+        in >> resources[i];
+    }
+
+    // Load goals
+    string marker;
+    in >> marker; // "g"
+
+    achievedGoals.clear();
+    int goalId;
+    while (in >> goalId) {
+        if (goalId < 0) break; // sentinel or error
+        achievedGoals.push_back(goalId);
+
+        // Update board
+        if (board && goalId >= 0 && goalId < 72) {
+            board->getGoals()[goalId].setOwner(colour);
+        }
+
+        // Check for "c" marker
+        char next = in.peek();
+        if (next == 'c') break;
+    }
+
+    // Load criteria
+    in >> marker; // "c"
+
+    completedCriteria.clear();
+    int critId, level;
+    while (in >> critId >> level) {
+        completedCriteria.push_back({ critId, level });
+
+        // Update board
+        if (board && critId >= 0 && critId < 54) {
+            board->getCriteria()[critId].setOwner(colour);
+            for (int i = 1; i < level; i++) {
+                board->getCriteria()[critId].upgrade();
+            }
+        }
+
+        // Check if line ends
+        if (in.peek() == '\n') break;
+    }
+
+    recalculateCourseCriteria();
 }

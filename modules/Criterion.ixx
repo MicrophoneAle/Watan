@@ -1,5 +1,5 @@
+// Criterion.ixx
 export module Criterion;
-
 import WatanTypes;
 
 export class Criterion {
@@ -17,5 +17,5 @@ public:
 private:
     int id;
     PlayerColour owner;
-    int level;   // 0 = unowned, 1–3 = assignment/midterm/final
+    int level; // 0 = unowned, 1-3 = Assignment/Midterm/Exam
 };

@@ -1,29 +1,28 @@
+// WatanTypes.ixx
 export module WatanTypes;
-
 import <string>;
 
 // Types of resources available on tiles.
 export enum class ResourceType {
-    Caffeine,
-    Lab,
-    Lecture,
-    Study,
-    Tutorial,
-    Netflix
+    Caffeine = 0,
+    Lab = 1,
+    Lecture = 2,
+    Study = 3,
+    Tutorial = 4,
+    Netflix = 5
 };
 
 // Player colours (students)
 export enum class PlayerColour {
-    None,
-    Blue,
-    Red,
-    Orange,
-    Yellow
+    None = 0,    // IMPORTANT: Added None for unowned criteria/goals
+    Blue = 1,
+    Red = 2,
+    Orange = 3,
+    Yellow = 4
 };
 
 // Convert ResourceType to a readable string
 export inline std::string toString(ResourceType r) {
-    using std::string;
     switch (r) {
     case ResourceType::Caffeine: return "CAFFEINE";
     case ResourceType::Lab:      return "LAB";
@@ -35,10 +34,10 @@ export inline std::string toString(ResourceType r) {
     return "UNKNOWN";
 }
 
-// (Optional but handy) Convert PlayerColour to string
+// Convert PlayerColour to string
 export inline std::string toString(PlayerColour c) {
-    using std::string;
     switch (c) {
+    case PlayerColour::None:   return "None";
     case PlayerColour::Blue:   return "Blue";
     case PlayerColour::Red:    return "Red";
     case PlayerColour::Orange: return "Orange";

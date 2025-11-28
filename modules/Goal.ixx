@@ -1,5 +1,5 @@
+// Goal.ixx
 export module Goal;
-
 import WatanTypes;
 
 export class Goal {
@@ -8,11 +8,10 @@ public:
     Goal(int id);
 
     int getId() const;
-
     PlayerColour getOwner() const;
     void setOwner(PlayerColour p);
 
 private:
     int id;
-    PlayerColour owner;  // Blue if unowned
+    PlayerColour owner;
 };

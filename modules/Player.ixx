@@ -1,6 +1,4 @@
-// ===== Player.ixx =====
 export module Player;
-
 import <array>;
 import <vector>;
 import <iostream>;
@@ -8,12 +6,13 @@ import WatanTypes;
 import IDiceStrategy;
 import RandomGenerator;
 
-// Version 9: Player stores basic resource counts,
-// completed criteria, achieved goals, and uses dice strategies.
+// Forward declaration
+export class Board;
 
 export class Player {
 public:
     Player(PlayerColour colour);
+    ~Player();
 
     // Colour
     PlayerColour getColour() const;
@@ -26,35 +25,41 @@ public:
     void addResource(ResourceType type, int amount);
     bool spendResource(ResourceType type, int amount);
     int getResource(ResourceType type) const;
+    int getTotalResources() const;
+    void loseRandomResources(int count, RandomGenerator& rng);
+    ResourceType stealRandomResource(RandomGenerator& rng);
 
     // Criteria + goals
-    void addCriterion(int criterionId);
+    void addCriterion(int criterionId, Board* board);
     void improveCriterion(int criterionId);
     void addGoal(int goalId);
-
     int getCourseCriteria() const;
+    void recalculateCourseCriteria();
+
+    // Study buddies and bonuses
+    void addStudyBuddy();
+    int getStudyBuddies() const;
+    void setLargestStudyGroup(bool has);
+    void setLongestGoals(bool has);
+    bool getLargestStudyGroup() const;
+    bool getLongestGoals() const;
 
     // Output
     void printStatus(std::ostream& out) const;
     void printCriteria(std::ostream& out) const;
 
+    // Save/Load
+    void save(std::ostream& out) const;
+    void load(std::istream& in, Board* board);
+
 private:
     PlayerColour colour;
-
-    // Caffeine, Lab, Lecture, Study, Tutorial
-    std::array<int, 5> resources;
-
-    // (criterionId, level [1–3])
-    std::vector<std::pair<int, int>> completedCriteria;
-
-    // goal ids
+    std::array<int, 5> resources; // Caffeine, Lab, Lecture, Study, Tutorial
+    std::vector<std::pair<int, int>> completedCriteria; // (criterionId, level)
     std::vector<int> achievedGoals;
-
     int numCourseCriteria;
-
-    // Strategy pointer (non-owning)
-    IDiceStrategy* diceStrat;
-
-    // Placeholder for event cards (unused in Option C)
-    std::vector<int> eventCards;
+    int numStudyBuddies;
+    bool hasLargestStudyGroup;
+    bool hasLongestGoals;
+    IDiceStrategy* diceStrat; // Non-owning in the sense we delete it ourselves
 };
