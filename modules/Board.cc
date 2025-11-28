@@ -1,8 +1,11 @@
-module Board;
+﻿module Board;
 
 import <vector>;
 import <iostream>;
 import <string>;
+import Tile;
+import WatanTypes;
+
 
 // --------------------------------------------------------------------------
 // Constructor & Setup
@@ -69,7 +72,22 @@ Board::Board() {
 // --------------------------------------------------------------------------
 
 void Board::initializeTiles() {
-    // Implementation
+    // These can be randomized in Version 7
+    std::vector<ResourceType> resources = {
+        ResourceType::Caffeine, ResourceType::Study, ResourceType::Lecture,
+        ResourceType::Lab, ResourceType::Tutorial, ResourceType::Caffeine,
+        ResourceType::Study, ResourceType::Lecture, ResourceType::Lab,
+        ResourceType::Tutorial, ResourceType::Caffeine, ResourceType::Study,
+        ResourceType::Lecture, ResourceType::Lab, ResourceType::Tutorial,
+        ResourceType::Caffeine, ResourceType::Study, ResourceType::Lecture,
+        ResourceType::Netflix // Geese tile
+    };
+
+    std::vector<int> values = { 4, 6, 9, 5, 8, 10, 3, 11, 12, 2, 4, 6, 9, 5, 8, 10, 3, 11, 7 };
+
+    for (int i = 0; i < 19; i++) {
+        tiles[i] = Tile(resources[i], values[i]);
+    }
 }
 
 void Board::placeGeese(int tileIndex) {
@@ -93,7 +111,18 @@ bool Board::isValidGoalPlacement(int goalIndex) {
 }
 
 void Board::distributeRessources(int roll) {
-    // Implementation
+    if (roll == 7) {
+        std::cout << "[Board] Roll = 7 - Geese activated!\n";
+        return;
+    }
+
+    for (int i = 0; i < 19; i++) {
+        if (tiles[i].getValue() == roll && i != geeseTileIndex) {
+            std::cout << "Tile " << i
+                << " produced " << toString(tiles[i].getResource())
+                << "\n";
+        }
+    }
 }
 
 // --------------------------------------------------------------------------

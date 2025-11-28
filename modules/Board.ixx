@@ -3,25 +3,35 @@ export module Board;
 import <vector>;
 import <iostream>;
 import <string>;
+import Tile;
+import WatanTypes;
 
 export class Board {
 private:
     int geeseTileIndex;
 
-    // This holds the 6 vertex neighbors for every tile (0 to 18)
+    // 19 tile objects
+    std::vector<Tile> tiles;
+
+    // 6 vertex neighbors for each tile
     std::vector<std::vector<int>> tileCoords;
 
 public:
-    Board(); // Constructor Declaration
+    Board(); // Constructor
 
-    void initializeTiles();
+    // Version 6 additions
+    void initializeTiles();                   // Load 19 tiles
+    void distributeRessources(int roll);      // Distribute based on dice roll
+
+    // Geese system
     void placeGeese(int tileIndex);
     int getGeeseTileIndex() const;
 
+    // Placeholder logic for future versions
     bool isValidCriterionPlacement(int criterionIndex);
     bool isValidGoalPlacement(int goalIndex);
-    void distributeRessources(int roll);
 
+    // Display
     void display(std::ostream& out) const;
     void print() const;
 

@@ -1,17 +1,14 @@
 export module Tile;
 
-import <iostream>;
+import <string>;
 import WatanTypes;
-
-using namespace std;
 
 export class Tile {
 public:
-    Tile(ResourceType r, int v);
+    Tile(ResourceType r = ResourceType::Netflix, int v = 0);
 
     ResourceType getResource() const;
     int getValue() const;
-    void print() const;
 
 private:
     ResourceType resource;
