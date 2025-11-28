@@ -1,4 +1,3 @@
-// ===== GoalSpeedrunCard.ixx =====
 export module GoalSpeedrunCard;
 
 import EventCard;

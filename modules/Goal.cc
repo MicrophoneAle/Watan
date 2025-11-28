@@ -1,4 +1,3 @@
-// Goal.cc
 module Goal;
 import WatanTypes;
 

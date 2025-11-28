@@ -1,4 +1,3 @@
-// ===== CourseCriteriaCard.ixx =====
 export module CourseCriteriaCard;
 
 import EventCard;

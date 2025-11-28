@@ -1,4 +1,3 @@
-// ===== StudyBuddyCard.ixx =====
 export module StudyBuddyCard;
 
 import EventCard;

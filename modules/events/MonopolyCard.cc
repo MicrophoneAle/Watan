@@ -1,4 +1,3 @@
-// ===== MonopolyCard.cc =====
 module MonopolyCard;
 
 import <iostream>;

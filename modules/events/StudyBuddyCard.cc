@@ -1,4 +1,3 @@
-// ===== StudyBuddyCard.cc =====
 module StudyBuddyCard;
 
 import <iostream>;

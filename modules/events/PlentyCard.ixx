@@ -1,4 +1,3 @@
-// ===== PlentyCard.ixx =====
 export module PlentyCard;
 
 import EventCard;

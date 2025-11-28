@@ -1,4 +1,3 @@
-// CommandParser.cc
 module CommandParser;
 import <string>;
 import <sstream>;
