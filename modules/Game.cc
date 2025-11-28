@@ -1,11 +1,9 @@
-// ===== Game.cc =====
 module Game;
 
 import <iostream>;
 import Player;
 import Board;
 import RandomGenerator;
-import IDiceStrategy;
 import FairDiceStrategy;
 import LoadedDiceStrategy;
 
@@ -13,29 +11,29 @@ using namespace std;
 
 Game::Game()
     : quit(false),
+    currentTurn(1),
     board(),
     player(PlayerColour::Blue),
     rng(123),
-    dice(make_unique<FairDiceStrategy>()) {
-    // In later versions, we may:
-    //   - initializeTiles()
-    //   - use different seeds via -seed
+    dice(make_unique<FairDiceStrategy>())
+{
+    startTurnMessage();
 }
 
-bool Game::isRunning() const {
-    return !quit;
+bool Game::isRunning() const { return !quit; }
+void Game::requestQuit() { quit = true; }
+
+Board& Game::getBoard() { return board; }
+Player& Game::getPlayer() { return player; }
+
+void Game::startTurnMessage() {
+    cout << "===== TURN " << currentTurn << " =====\n";
+    cout << "Player " << toString(player.getColour()) << ", it is your turn.\n";
 }
 
-void Game::requestQuit() {
-    quit = true;
-}
-
-Board& Game::getBoard() {
-    return board;
-}
-
-Player& Game::getPlayer() {
-    return player;
+void Game::nextTurn() {
+    currentTurn++;
+    startTurnMessage();
 }
 
 int Game::rollDice() {

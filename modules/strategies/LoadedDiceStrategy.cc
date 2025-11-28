@@ -1,26 +1,17 @@
 module LoadedDiceStrategy;
 
 import <iostream>;
-import IDiceStrategy;
 import RandomGenerator;
 
-using namespace std;
+LoadedDiceStrategy::LoadedDiceStrategy()
+    : v1(1), v2(1) {
+}
 
-int LoadedDiceStrategy::roll(RandomGenerator& rng) {
-    while (true) {
-        cout << "Enter a number (2-12): ";
-        int x;
-        if (!(cin >> x)) {
-            cin.clear();
-            cin.ignore(9999, '\n');
-            cout << "Invalid input. Try again.\n";
-            continue;
-        }
-        if (x < 2 || x > 12) {
-            cout << "Out of range. Try again.\n";
-            continue;
-        }
-        cin.ignore(9999, '\n'); // flush
-        return x;
-    }
+void LoadedDiceStrategy::setLoadedValues(int a, int b) {
+    if (a >= 1 && a <= 6) v1 = a;
+    if (b >= 1 && b <= 6) v2 = b;
+}
+
+int LoadedDiceStrategy::roll(RandomGenerator&) {
+    return v1 + v2;
 }
