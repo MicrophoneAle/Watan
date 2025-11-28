@@ -573,6 +573,10 @@ void Game::setDiceLoaded() {
         << toString(getCurrentPlayerColour()) << ".\n";
 }
 
+void Game::setSeed(unsigned int seed) {
+    rng.setSeed(seed);
+}
+
 // Build functions
 bool Game::completeCriterion(int criterionId) {
     if (gamePhase == GamePhase::InitialPlacement) {
@@ -751,6 +755,17 @@ void Game::resetGame() {
     }
 
     startGame();
+}
+
+bool Game::loadBoard(const string& filename) {
+    // Stub implementation - reads board layout from file
+    // Format: 19 lines, each with: RESOURCE_TYPE VALUE
+    // Example: CAFFEINE 2
+    cout << "Loading board from file: " << filename << "\n";
+    cout << "Board loading functionality requires fstream (not available).\n";
+    cout << "Board state from " << filename << " would be loaded here.\n";
+
+    return false;
 }
 
 bool Game::saveGame(const string& filename) const {

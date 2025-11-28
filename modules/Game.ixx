@@ -59,6 +59,7 @@ public:
     int rollDice();
     void setDiceFair();
     void setDiceLoaded();
+    void setSeed(unsigned int seed);
 
     // Actions
     bool completeCriterion(int criterionId);
@@ -78,6 +79,7 @@ public:
     // Save/Load
     bool saveGame(const std::string& filename) const;
     bool loadGame(const std::string& filename);
+    bool loadBoard(const std::string& filename);
 
 private:
     bool quit;
