@@ -14,13 +14,14 @@ export class Game {
 public:
     Game();
 
-    // Main loop control
+    // Loop control
     bool isRunning() const;
     void requestQuit();
 
     // Board access
     Board& getBoard();
 
+    // Player access
     Player& getPlayer();
     const Player& getPlayer() const;
 
@@ -32,7 +33,7 @@ public:
 
     // Turn flow
     void startTurnMessage();
-    void nextTurn(); 
+    void nextTurn();
 
     // Dice
     int rollDice();
@@ -41,11 +42,12 @@ public:
 
 private:
     bool quit;
-    int currentTurn; 
+    int currentTurn;
     int currentPlayer;
 
     Board board;
     std::array<Player, 4> players;
+
     RandomGenerator rng;
     std::unique_ptr<IDiceStrategy> dice;
 };

@@ -4,6 +4,7 @@ import <iostream>;
 import CommandParser;
 import Game;
 import Player;
+import WatanTypes;
 
 using namespace std;
 
@@ -31,14 +32,12 @@ void CommandExecutor::execute(const Command& cmd, Game& game) {
     }
 
     else if (cmd.name == "status") {
-        // Show status for all 4 students, in order Blue, Red, Orange, Yellow
         for (int i = 0; i < 4; ++i) {
             game.getPlayer(i).printStatus(cout);
         }
     }
 
     else if (cmd.name == "criteria") {
-        // Show criteria only for the current student
         game.getPlayer().printCriteria(cout);
     }
 
@@ -55,7 +54,6 @@ void CommandExecutor::execute(const Command& cmd, Game& game) {
     }
 
     else if (cmd.name == "turn") {
-        // Reprint current turn banner + current player status
         game.startTurnMessage();
     }
 
@@ -67,45 +65,42 @@ void CommandExecutor::execute(const Command& cmd, Game& game) {
     else if (cmd.name == "complete") {
         int x;
         if (cin >> x) {
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             Player& p = game.getPlayer();
             p.addCriterion(x);
             cout << "Student completed criterion " << x << ".\n";
         }
         else {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid criterion index.\n";
+            cin.ignore(1000, '\n');
+            cout << "Invalid value.\n";
         }
     }
 
     else if (cmd.name == "improve") {
         int x;
         if (cin >> x) {
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             Player& p = game.getPlayer();
             p.improveCriterion(x);
             cout << "Student improved criterion " << x << ".\n";
         }
         else {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid criterion index.\n";
+            cin.ignore(1000, '\n');
+            cout << "Invalid value.\n";
         }
     }
 
     else if (cmd.name == "achieve") {
         int x;
         if (cin >> x) {
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             Player& p = game.getPlayer();
             p.addGoal(x);
             cout << "Student achieved goal " << x << ".\n";
         }
         else {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid goal index.\n";
+            cin.ignore(1000, '\n');
+            cout << "Invalid value.\n";
         }
     }
 

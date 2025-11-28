@@ -24,7 +24,6 @@ Game::Game()
     rng(123),
     dice(make_unique<FairDiceStrategy>())
 {
-    // Initial banner when the game starts
     startTurnMessage();
 }
 
@@ -67,12 +66,10 @@ PlayerColour Game::getCurrentPlayerColour() const {
 void Game::startTurnMessage() {
     cout << "----------------------------------------\n";
     cout << "Student " << toString(getCurrentPlayerColour()) << "'s turn.\n";
-    // Show the current player's status at the start of their turn
     getPlayer().printStatus(cout);
 }
 
 void Game::nextTurn() {
-    // Move to next player in order: Blue, Red, Orange, Yellow
     currentPlayer = (currentPlayer + 1) % 4;
     ++currentTurn;
     startTurnMessage();
@@ -83,7 +80,6 @@ int Game::rollDice() {
     cout << "Student " << toString(getCurrentPlayerColour())
         << " rolled " << val << ".\n";
 
-    // Still using simple distribution for now (full rules in later versions)
     board.distributeResources(val);
     return val;
 }
