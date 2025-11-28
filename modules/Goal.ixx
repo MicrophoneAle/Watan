@@ -1,4 +1,3 @@
-// Goal.ixx
 export module Goal;
 import WatanTypes;
 

@@ -1,4 +1,3 @@
-// WatanTypes.ixx
 export module WatanTypes;
 import <string>;
 

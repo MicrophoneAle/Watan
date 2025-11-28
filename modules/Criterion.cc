@@ -1,4 +1,3 @@
-// Criterion.cc
 module Criterion;
 import WatanTypes;
 

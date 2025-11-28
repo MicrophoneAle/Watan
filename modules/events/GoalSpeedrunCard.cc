@@ -1,4 +1,3 @@
-// ===== GoalSpeedrunCard.cc =====
 module GoalSpeedrunCard;
 
 import <iostream>;
