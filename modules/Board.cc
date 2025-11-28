@@ -1,32 +1,39 @@
-﻿module Board;
+﻿// ===== Board.cc =====
+module Board;
 
+import <array>;
 import <vector>;
 import <iostream>;
 import <string>;
 import Tile;
+import Criterion;
+import Goal;
 import WatanTypes;
-
 
 // --------------------------------------------------------------------------
 // Constructor & Setup
 // --------------------------------------------------------------------------
-Board::Board() {
-    // Initialize the vector for 19 tiles
-    tileCoords.resize(19);
-    /*tiles.resize(19);
+Board::Board()
+    : geeseTileIndex{ -1 }
+{
+    // Allocate containers
+    tiles.resize(19);
     criteria.resize(54);
-    goals.resize(72);*/
+    goals.resize(72);
+    tileCoords.resize(19);
 
-    // Init Indices
-    /*for (int i = 0; i < 19; ++i) tiles[i].setDetails(i, -1, Resource::NONE);
-    for (int i = 0; i < 54; ++i) criteria[i].setId(i);
-    for (int i = 72; i < 72; ++i) goals[i].setId(i);*/
-
-    // Init Geese
-    geeseTileIndex = -1; // Starts on Netflix
+    // Initialize criteria & goals with ids; adjacency will be wired later.
+    for (int i = 0; i < 54; ++i) {
+        criteria[i] = Criterion(i);
+    }
+    for (int i = 0; i < 72; ++i) {
+        goals[i] = Goal(i);
+    }
 
     // ---------------------------------------------------------
     // 6 vertex numbers starting from top-left, going clockwise
+    // These indices come directly from the assignment board diagram.
+    // tileCoords[tile] = { six criterion indices around that tile }
     // ---------------------------------------------------------
 
     // Row 1 (Top)
@@ -72,26 +79,30 @@ Board::Board() {
 // --------------------------------------------------------------------------
 
 void Board::initializeTiles() {
-    // These can be randomized in Version 7
+    // These can be randomized in a later version (RandomBoardSetupStrategy).
     std::vector<ResourceType> resources = {
-        ResourceType::Caffeine, ResourceType::Study, ResourceType::Lecture,
-        ResourceType::Lab, ResourceType::Tutorial, ResourceType::Caffeine,
-        ResourceType::Study, ResourceType::Lecture, ResourceType::Lab,
+        ResourceType::Caffeine, ResourceType::Study,    ResourceType::Lecture,
+        ResourceType::Lab,      ResourceType::Tutorial, ResourceType::Caffeine,
+        ResourceType::Study,    ResourceType::Lecture,  ResourceType::Lab,
         ResourceType::Tutorial, ResourceType::Caffeine, ResourceType::Study,
-        ResourceType::Lecture, ResourceType::Lab, ResourceType::Tutorial,
-        ResourceType::Caffeine, ResourceType::Study, ResourceType::Lecture,
-        ResourceType::Netflix // Geese tile
+        ResourceType::Lecture,  ResourceType::Lab,      ResourceType::Tutorial,
+        ResourceType::Caffeine, ResourceType::Study,    ResourceType::Lecture,
+        ResourceType::Netflix   // Geese tile
     };
 
-    std::vector<int> values = { 4, 6, 9, 5, 8, 10, 3, 11, 12, 2, 4, 6, 9, 5, 8, 10, 3, 11, 7 };
+    std::vector<int> values = {
+        4, 6, 9, 5, 8, 10, 3, 11, 12, 2,
+        4, 6, 9, 5, 8, 10, 3, 11, 7
+    };
 
-    for (int i = 0; i < 19; i++) {
+    // Make sure we actually have 19 tiles allocated (done in ctor).
+    for (int i = 0; i < 19; ++i) {
         tiles[i] = Tile(resources[i], values[i]);
     }
 }
 
 void Board::placeGeese(int tileIndex) {
-    if (tileIndex >= 0 && tileIndex < 19) {
+    if (tileIndex >= 0 && tileIndex < static_cast<int>(tiles.size())) {
         geeseTileIndex = tileIndex;
     }
 }
@@ -100,14 +111,19 @@ int Board::getGeeseTileIndex() const {
     return geeseTileIndex;
 }
 
-bool Board::isValidCriterionPlacement(int criterionIndex) {
-    // Implementation
-    return false;
+bool Board::isValidCriterionPlacement(int /*criterionIndex*/) {
+    // TODO (later version):
+    //   - Enforce "no adjacent completed criterion"
+    //   - Enforce connectivity via achieved goals
+    //   - Enforce initial placement rules
+    return true;
 }
 
-bool Board::isValidGoalPlacement(int goalIndex) {
-    // Implementation
-    return false;
+bool Board::isValidGoalPlacement(int /*goalIndex*/) {
+    // TODO (later version):
+    //   - Enforce adjacency to player's existing criteria/goals
+    //   - Enforce that goal is not already owned
+    return true;
 }
 
 void Board::distributeRessources(int roll) {
@@ -116,6 +132,11 @@ void Board::distributeRessources(int roll) {
         return;
     }
 
+    // Version 8: keep behaviour simple (just print which tiles would produce).
+    // In a later version we will:
+    //   - walk tileCoords
+    //   - check which criteria are owned and at what level (Assignment/Midterm/Exam)
+    //   - actually credit resources to players
     for (int i = 0; i < 19; i++) {
         if (tiles[i].getValue() == roll && i != geeseTileIndex) {
             std::cout << "Tile " << i
@@ -126,7 +147,23 @@ void Board::distributeRessources(int roll) {
 }
 
 // --------------------------------------------------------------------------
-// Display Logic
+// Accessors
+// --------------------------------------------------------------------------
+
+const std::vector<Tile>& Board::getTiles() const {
+    return tiles;
+}
+
+const std::vector<Criterion>& Board::getCriteria() const {
+    return criteria;
+}
+
+const std::vector<Goal>& Board::getGoals() const {
+    return goals;
+}
+
+// --------------------------------------------------------------------------
+// Display Logic (unchanged from your version)
 // --------------------------------------------------------------------------
 
 void Board::display(std::ostream& out) const {

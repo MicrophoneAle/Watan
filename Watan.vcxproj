@@ -165,6 +165,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCppModule</CompileAs>
     </ClCompile>
     <ClCompile Include="modules\Criterion.cc" />
+    <ClCompile Include="modules\Criterion.ixx" />
     <ClCompile Include="modules\Error.cc" />
     <ClCompile Include="modules\events\CourseCriteriaCard.cc" />
     <ClCompile Include="modules\events\CourseCriteriaCard.ixx">
@@ -221,6 +222,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCppModule</CompileAs>
     </ClCompile>
     <ClCompile Include="modules\Goal.cc" />
+    <ClCompile Include="modules\Goal.ixx" />
     <ClCompile Include="modules\Player.cc">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Default</CompileAs>
