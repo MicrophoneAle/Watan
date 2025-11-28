@@ -12,7 +12,7 @@ int main() {
     CommandParser parser;
     CommandExecutor executor;
 
-    cout << "Welcome to Watan!\n";
+    cout << "Watan Version 2 Loaded.\n";
 
     string line;
     while (!game.shouldQuit() && getline(cin, line)) {
