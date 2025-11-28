@@ -111,19 +111,67 @@ int Board::getGeeseTileIndex() const {
     return geeseTileIndex;
 }
 
-bool Board::isValidCriterionPlacement(int /*criterionIndex*/) {
-    // TODO (later version):
-    //   - Enforce "no adjacent completed criterion"
-    //   - Enforce connectivity via achieved goals
-    //   - Enforce initial placement rules
+bool Board::adjacentCriterionExists(int id) const {
+    // Criterion graph:
+    // each vertex has up to 3 neighbors in typical Catan geometry
+    // Formula from UML: neighbors = { id-1, id+1, id±6 }
+    // (wraps must be checked)
+    static const int offsets[4] = { -1, +1, -6, +6 };
+
+    for (int d : offsets) {
+        int n = id + d;
+        if (n >= 0 && n < 54) {
+            if (criteria[n].getOwner() != PlayerColour::Blue)
+                return true;
+        }
+    }
+    return false;
+}
+
+bool Board::isValidCriterionPlacement(int id) const {
+    if (id < 0 || id >= 54) return false;
+
+    const Criterion& c = criteria[id];
+    if (c.getLevel() != 0) return false;        // already owned
+
+    // must not be next to another criterion
+    if (adjacentCriterionExists(id)) return false;
+
     return true;
 }
 
-bool Board::isValidGoalPlacement(int /*goalIndex*/) {
-    // TODO (later version):
-    //   - Enforce adjacency to player's existing criteria/goals
-    //   - Enforce that goal is not already owned
-    return true;
+// --------------------
+
+bool Board::adjacentGoalExists(int id) const {
+    // From UML: each edge touches two vertices => two adjacent goals
+    // Approx formula: neighbors ≈ id±1 (same row) and id±6 (row above/below)
+
+    static const int offsets[4] = { -1, +1, -6, +6 };
+
+    for (int d : offsets) {
+        int n = id + d;
+        if (n >= 0 && n < 72) {
+            if (goals[n].getOwner() != PlayerColour::Blue)
+                return true;
+        }
+    }
+    return false;
+}
+
+bool Board::isValidGoalPlacement(int id) const {
+    if (id < 0 || id >= 72) return false;
+
+    const Goal& g = goals[id];
+    if (g.getOwner() != PlayerColour::Blue) return false;
+
+    // Must connect to at least one owned criterion
+    // Simplified from UML:
+    int v1 = id / 2;
+    int v2 = v1 + 1;
+    if (v1 >= 0 && v1 < 54 && criteria[v1].getLevel() > 0) return true;
+    if (v2 >= 0 && v2 < 54 && criteria[v2].getLevel() > 0) return true;
+
+    return false;
 }
 
 void Board::distributeRessources(int roll) {

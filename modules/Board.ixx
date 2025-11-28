@@ -1,48 +1,31 @@
 export module Board;
 
-import <array>;
 import <vector>;
 import <iostream>;
 import <string>;
+
 import Tile;
 import Criterion;
 import Goal;
 import WatanTypes;
 
 export class Board {
-private:
-    // Index of the tile containing the geese (-1 => not on board yet)
-    int geeseTileIndex;
-
-    // 19 tile objects
-    std::vector<Tile> tiles;
-
-    // 54 criteria (vertices)
-    std::vector<Criterion> criteria;
-
-    // 72 goals (edges)
-    std::vector<Goal> goals;
-
-    // For each tile, the 6 criterion indices around it (in clockwise order).
-    // Indices are 0..53, matching the assignment spec diagram.
-    std::vector<std::array<int, 6>> tileCoords;
-
 public:
-    Board(); // Constructor
+    Board();
 
-    // Version 6/8 additions
-    void initializeTiles();                  // Load 19 tiles with resource + value
-    void distributeRessources(int roll);     // Distribute based on dice roll (still simple in v8)
-
-    // Geese system
+    // Version 6+
+    void initializeTiles();
     void placeGeese(int tileIndex);
     int getGeeseTileIndex() const;
 
-    // Placement validation (stubs for now, to be fully implemented in later versions)
-    bool isValidCriterionPlacement(int criterionIndex);
-    bool isValidGoalPlacement(int goalIndex);
+    // Version 10: Placement validation
+    bool isValidCriterionPlacement(int id) const;
+    bool isValidGoalPlacement(int id) const;
 
-    // Accessors (useful for later versions)
+    // Version 8: resource distribution (prints only for now)
+    void distributeRessources(int roll);
+
+    // NEW version 10 accessors
     const std::vector<Tile>& getTiles() const;
     const std::vector<Criterion>& getCriteria() const;
     const std::vector<Goal>& getGoals() const;
@@ -51,5 +34,22 @@ public:
     void display(std::ostream& out) const;
     void print() const;
 
-    friend std::ostream& operator<<(std::ostream& out, const Board& board);
+    friend std::ostream& operator<<(std::ostream& out, const Board& b);
+
+private:
+    int geeseTileIndex;
+
+    // Tiles (19 hexes)
+    std::vector<Tile> tiles;
+
+    // 6 vertex indices per tile
+    std::vector<std::vector<int>> tileCoords;
+
+    // NEW in Version 10
+    std::vector<Criterion> criteria;   // 54 vertices
+    std::vector<Goal> goals;           // 72 edges
+
+    // Helper adjacency logic
+    bool adjacentCriterionExists(int id) const;
+    bool adjacentGoalExists(int id) const;
 };

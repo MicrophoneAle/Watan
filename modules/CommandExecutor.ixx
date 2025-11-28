@@ -1,10 +1,9 @@
+// ===== CommandExecutor.ixx =====
 export module CommandExecutor;
 
 import <iostream>;
 import CommandParser;
 import Game;
-
-using namespace std;
 
 export class CommandExecutor {
 public:

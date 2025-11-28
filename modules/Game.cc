@@ -1,3 +1,4 @@
+// ===== Game.cc =====
 module Game;
 
 import <iostream>;
@@ -16,13 +17,26 @@ Game::Game()
     player(PlayerColour::Blue),
     rng(123),
     dice(make_unique<FairDiceStrategy>()) {
+    // In later versions, we may:
+    //   - initializeTiles()
+    //   - use different seeds via -seed
 }
 
-bool Game::isRunning() const { return !quit; }
-void Game::requestQuit() { quit = true; }
+bool Game::isRunning() const {
+    return !quit;
+}
 
-Board& Game::getBoard() { return board; }
-Player& Game::getPlayer() { return player; }
+void Game::requestQuit() {
+    quit = true;
+}
+
+Board& Game::getBoard() {
+    return board;
+}
+
+Player& Game::getPlayer() {
+    return player;
+}
 
 int Game::rollDice() {
     int val = dice->roll(rng);

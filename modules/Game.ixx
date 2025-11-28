@@ -1,3 +1,4 @@
+// ===== Game.ixx =====
 export module Game;
 
 import <memory>;
@@ -8,6 +9,8 @@ import IDiceStrategy;
 import FairDiceStrategy;
 import LoadedDiceStrategy;
 
+// Game orchestrates the main loop and owns Board, Player, RNG and dice strategy.
+// Version 9: still single-player (Blue) with fair/loaded dice switching.
 export class Game {
 public:
     Game();
