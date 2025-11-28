@@ -127,11 +127,11 @@ void Player::loseRandomResources(int count, RandomGenerator& rng) {
             break;
         }
 
-		// Select random resource to lose
+        // Select random resource to lose
         int idx = rng.getInt(0, static_cast<int>(available.size()) - 1);
         ResourceType toLose = available[idx];
 
-		// Spend the resource on nothing
+        // Spend the resource on nothing
         spendResource(toLose, 1);
         cout << "  1 " << toString(toLose) << "\n";
     }
@@ -140,7 +140,7 @@ void Player::loseRandomResources(int count, RandomGenerator& rng) {
 ResourceType Player::stealRandomResource(RandomGenerator& rng) {
     vector<ResourceType> available;
 
-	// Gather available resources
+    // Gather available resources
     for (int i = 0; i < 5; i++) {
         if (resources[i] > 0) {
             available.push_back(static_cast<ResourceType>(i));
