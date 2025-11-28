@@ -56,8 +56,8 @@ public:
 
 private:
     PlayerColour colour;
-    std::array<int, 5> resources; // Resources
-    std::vector<std::pair<int, int>> completedCriteria; // (criterionId, level)
+    std::array<int, 5> resources;
+    std::vector<std::pair<int, int>> completedCriteria;
     std::vector<int> achievedGoals;
     int numCourseCriteria;
     int numStudyBuddies;

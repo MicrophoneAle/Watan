@@ -66,7 +66,7 @@ void Board::initializeGoalConnections() {
     // Hardcode connections based on board layout
     goalConnections[0] = { 0, 1 };
     goalConnections[1] = { 0, 2 };
-    goalConnections[2] = { 1, 5 };
+    goalConnections[2] = { 1, 4 };
     goalConnections[3] = { 2, 3 };
     goalConnections[4] = { 4, 5 };
     goalConnections[5] = { 2, 6 };
@@ -228,37 +228,49 @@ vector<int> Board::getAdjacentCriteria(int criterionId) const {
     return adjacent;
 }
 
-bool Board::adjacentCriterionExists(int id) const {
-    auto adjacent = getAdjacentCriteria(id);
+// Adjacent based on criteria placement
+bool Board::adjacentCriterionExists(int criterionId) const {
+    vector<int> adjacent;
 
-    for (int adjId : adjacent) {
-        if (adjId >= 0 && adjId < 54 && criteria[adjId].getOwner() != PlayerColour::None) {
-            return true;
+    if (criterionId < 0 || criterionId >= 54) {
+        return false;
+    }
+
+    // Check all tiles and see if the criterion is adjacent
+    for (int i = 0; i < 19; ++i) {
+        const auto& criteriaOnTile = tileCoords[i];
+
+        if (find(criteriaOnTile.begin(), criteriaOnTile.end(), criterionId) != criteriaOnTile.end()) {
+            // Look for other criteria on tile that have been placed by other player
+            for (int critId : criteriaOnTile) {
+                if (critId != criterionId && criteria[critId].getOwner() != PlayerColour::None) {
+                    return true;
+                }
+            }
         }
     }
     return false;
 }
 
-bool Board::isValidCriterionPlacement(int id, PlayerColour player, bool isInitialPlacement) const {
-    if (id < 0 || id >= 54) {
+bool Board::isValidCriterionPlacement(int criterionId, PlayerColour player, bool isInitialPlacement) const {
+    if (criterionId < 0 || criterionId >= 54) {
         return false;
     }
-    if (criteria[id].getLevel() != 0) {
-        return false;
-    }
-
-    // Check for adjacent criteria
-    if (adjacentCriterionExists(id)) {
+    if (criteria[criterionId].getLevel() != 0) {
         return false;
     }
 
-    // First placement
+    // If this is not the first placement, check for adjacency to placed criteria
+    if (!isInitialPlacement && adjacentCriterionExists(criterionId)) {
+        return false;
+    }
+
+    // First placement is valid if no adjacent criteria
     if (isInitialPlacement) {
         return true;
     }
 
-    // Check if connected to goal
-    return isConnectedToPlayerGoal(id, player);
+    return true;
 }
 
 bool Board::isConnectedToPlayerGoal(int criterionId, PlayerColour player) const {

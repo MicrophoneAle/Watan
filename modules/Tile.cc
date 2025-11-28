@@ -1,6 +1,10 @@
 module Tile;
+
 import <string>;
+
 import WatanTypes;
+
+using namespace std;
 
 Tile::Tile(ResourceType r, int v)
     : resource(r), value(v) {
@@ -14,8 +18,8 @@ int Tile::getValue() const {
     return value;
 }
 
-std::string Tile::getResourceStr() const {
-    std::string s = toString(resource);
+string Tile::getResourceStr() const {
+    string s = toString(resource);
 
     // Pad to 8 characters for board alignment
     size_t len = s.length();
@@ -25,15 +29,15 @@ std::string Tile::getResourceStr() const {
     size_t leftPad = totalPad / 2;
     size_t rightPad = totalPad - leftPad;
 
-    return std::string(leftPad, ' ') + s + std::string(rightPad, ' ');
+    return string(leftPad, ' ') + s + string(rightPad, ' ');
 }
 
-std::string Tile::getValueStr() const {
-    // Netflix or value 7 shows empty (2 spaces to maintain alignment)
+string Tile::getValueStr() const {
+    // Netflix or value 7 shows empty
     if (value == 7 || resource == ResourceType::Netflix) {
         return "  ";
     }
 
-    // Single digit gets leading space for alignment (always 2 chars total)
-    return (value < 10 ? " " : "") + std::to_string(value);
+    // Single digit gets leading space for alignment
+    return (value < 10 ? " " : "") + to_string(value);
 }

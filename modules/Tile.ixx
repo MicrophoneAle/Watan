@@ -1,6 +1,10 @@
 export module Tile;
+
 import <string>;
+
 import WatanTypes;
+
+using namespace std;
 
 export class Tile {
 public:
@@ -8,8 +12,8 @@ public:
 
     ResourceType getResource() const;
     int getValue() const;
-    std::string getResourceStr() const;
-    std::string getValueStr() const;
+    string getResourceStr() const;
+    string getValueStr() const;
 
 private:
     ResourceType resource;

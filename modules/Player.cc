@@ -146,11 +146,9 @@ ResourceType Player::stealRandomResource(RandomGenerator& rng) {
             available.push_back(static_cast<ResourceType>(i));
         }
     }
-
     if (available.empty()) {
         return ResourceType::Netflix;
     }
-
     int idx = rng.getInt(0, static_cast<int>(available.size()) - 1);
     ResourceType stolen = available[idx];
     spendResource(stolen, 1);
@@ -264,12 +262,14 @@ void Player::save(std::ostream& out) const {
 
     // Goals
     out << "g ";
+
     for (int goalId : achievedGoals) {
         out << goalId << " ";
     }
 
     // Criteria
     out << "c ";
+
     for (const auto& [id, level] : completedCriteria) {
         out << id << " " << level << " ";
     }
@@ -289,6 +289,7 @@ void Player::load(std::istream& in, Board* /*board*/) {
 
     achievedGoals.clear();
     int goalId;
+
     while (in >> goalId) {
         if (goalId < 0) {
             break;
@@ -297,6 +298,7 @@ void Player::load(std::istream& in, Board* /*board*/) {
 
         // Check for "c" marker
         char next = in.peek();
+
         if (next == 'c') {
             break;
         }

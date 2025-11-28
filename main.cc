@@ -137,11 +137,9 @@ int main(int argc, char* argv[]) {
             continue;
         }
 
-        // Normal command processing
         Command cmd = parser.parse(line);
         exec.execute(cmd, game);
     }
-
     cout << "\nThanks for playing Students of Watan!\n";
     return 0;
 }

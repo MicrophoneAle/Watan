@@ -11,8 +11,6 @@ public:
     void setSeed(unsigned int seed);
     int getInt(int min, int max);
 
-     
-
 private:
     mt19937 rng;
 };
