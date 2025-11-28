@@ -8,3 +8,4 @@ export class CommandExecutor {
 public:
     void execute(const Command& cmd, Game& game);
 };
+
