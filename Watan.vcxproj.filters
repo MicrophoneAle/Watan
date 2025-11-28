@@ -15,146 +15,154 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="modules\Board.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\CommandExecutor.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\CommandParser.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\Criterion.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\Game.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\Goal.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\Player.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\RandomGenerator.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\Tile.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\WatanTypes.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\events\CourseCriteriaCard.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\events\EventCard.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\events\GoalSpeedrunCard.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\events\MonopolyCard.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\events\PlentyCard.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\events\StudyBuddyCard.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\strategies\FairDiceStrategy.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\strategies\FileBoardSetupStrategy.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\strategies\IBoardSetupStrategy.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\strategies\IDiceStrategy.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\strategies\LoadedDiceStrategy.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\strategies\RandomBoardSetupStrategy.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\Board.ixx">
+    <ClCompile Include="Board-impl.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\CommandExecutor.ixx">
+    <ClCompile Include="Board.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\CommandParser.ixx">
+    <ClCompile Include="WatanTypes.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\events\CourseCriteriaCard.ixx">
+    <ClCompile Include="Player.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\events\EventCard.ixx">
+    <ClCompile Include="Player-impl.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\events\GoalSpeedrunCard.ixx">
+    <ClCompile Include="CommandExecutor.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\events\MonopolyCard.ixx">
+    <ClCompile Include="CommandExecutor-impl.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\events\PlentyCard.ixx">
+    <ClCompile Include="CommandLineParser.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\events\StudyBuddyCard.ixx">
+    <ClCompile Include="CommandLineParser-impl.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\Game.ixx">
+    <ClCompile Include="CommandParser.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\Player.ixx">
+    <ClCompile Include="CommandParser-impl.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\RandomGenerator.ixx">
+    <ClCompile Include="CourseCriteriaCard.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\strategies\FairDiceStrategy.ixx">
+    <ClCompile Include="CourseCriteriaCard-impl.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\strategies\FileBoardSetupStrategy.ixx">
+    <ClCompile Include="Criterion.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\strategies\IBoardSetupStrategy.ixx">
+    <ClCompile Include="Criterion-impl.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\strategies\IDiceStrategy.ixx">
+    <ClCompile Include="EventCard.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\strategies\LoadedDiceStrategy.ixx">
+    <ClCompile Include="EventCard-impl.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\strategies\RandomBoardSetupStrategy.ixx">
+    <ClCompile Include="FairDiceStrategy.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\Tile.ixx">
+    <ClCompile Include="FairDiceStrategy-impl.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\WatanTypes.ixx">
+    <ClCompile Include="FileBoardSetupStrategy.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\Criterion.ixx">
+    <ClCompile Include="FileBoardSetupStrategy-impl.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\Goal.ixx">
+    <ClCompile Include="Game.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\CommandLineParser.cc">
+    <ClCompile Include="Game-impl.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\CommandLineParser.ixx">
+    <ClCompile Include="Goal.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Goal-impl.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GoalSpeedrunCard.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GoalSpeedrunCard-impl.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IBoardSetupStrategy.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IBoardSetupStrategy-impl.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IDiceStrategy-impl.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadedDiceStrategy-impl.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MonopolyCard.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MonopolyCard-impl.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlentyCard.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlentyCard-impl.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomBoardSetupStrategy.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomBoardSetupStrategy-impl.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomGenerator.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomGenerator-impl.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StudyBuddyCard.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StudyBuddyCard-impl.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile-impl.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IDiceStrategy.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WatanTypes-impl.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="convert.sh" />
+    <None Include="Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Board.o" />
+    <Object Include="CommandExecutor.o" />
+    <Object Include="CommandLineParser.o" />
+    <Object Include="CommandParser.o" />
+    <Object Include="Criterion.o" />
   </ItemGroup>
 </Project>
