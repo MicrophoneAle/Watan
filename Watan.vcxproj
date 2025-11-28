@@ -127,7 +127,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Watan.cpp" />
+    <ClCompile Include="main.cc" />
+    <ClCompile Include="modules\Board.cc" />
+    <ClCompile Include="modules\CommandExecutor.cc" />
+    <ClCompile Include="modules\CommandParser.cc" />
+    <ClCompile Include="modules\Criterion.cc" />
+    <ClCompile Include="modules\Error.cc" />
+    <ClCompile Include="modules\events\CourseCriteriaCard.cc" />
+    <ClCompile Include="modules\events\EventCard.cc" />
+    <ClCompile Include="modules\events\GoalSpeedrunCard.cc" />
+    <ClCompile Include="modules\events\MonopolyCard.cc" />
+    <ClCompile Include="modules\events\PlentyCard.cc" />
+    <ClCompile Include="modules\events\StudyBuddyCard.cc" />
+    <ClCompile Include="modules\Game.cc" />
+    <ClCompile Include="modules\Goal.cc" />
+    <ClCompile Include="modules\Player.cc" />
+    <ClCompile Include="modules\RandomGenerator.cc" />
+    <ClCompile Include="modules\SaveLoad.cc" />
+    <ClCompile Include="modules\strategies\FairDiceStrategy.cc" />
+    <ClCompile Include="modules\strategies\FileBoardSetupStrategy.cc" />
+    <ClCompile Include="modules\strategies\IBoardSetupStrategy.cc" />
+    <ClCompile Include="modules\strategies\IDiceStrategy.cc" />
+    <ClCompile Include="modules\strategies\LoadedDiceStrategy.cc" />
+    <ClCompile Include="modules\strategies\RandomBoardSetupStrategy.cc" />
+    <ClCompile Include="modules\TestRunner.cc" />
+    <ClCompile Include="modules\Tile.cc" />
+    <ClCompile Include="modules\WatanTypes.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

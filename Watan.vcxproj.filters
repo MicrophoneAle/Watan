@@ -15,7 +15,82 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Watan.cpp">
+    <ClCompile Include="modules\Board.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\CommandExecutor.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\CommandParser.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\Criterion.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\Error.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\Game.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\Goal.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\Player.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\RandomGenerator.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\SaveLoad.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\TestRunner.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\Tile.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\WatanTypes.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\events\CourseCriteriaCard.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\events\EventCard.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\events\GoalSpeedrunCard.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\events\MonopolyCard.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\events\PlentyCard.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\events\StudyBuddyCard.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\strategies\FairDiceStrategy.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\strategies\FileBoardSetupStrategy.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\strategies\IBoardSetupStrategy.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\strategies\IDiceStrategy.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\strategies\LoadedDiceStrategy.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\strategies\RandomBoardSetupStrategy.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
