@@ -1,6 +1,10 @@
 module Tile;
+
 import <string>;
+
 import WatanTypes;
+
+using namespace std;
 
 Tile::Tile(ResourceType r, int v)
     : resource(r), value(v) {
@@ -14,23 +18,24 @@ int Tile::getValue() const {
     return value;
 }
 
-std::string Tile::getResourceStr() const {
-    std::string s = toString(resource);
-
+string Tile::getResourceStr() const {
+    string s = toString(resource);
     size_t len = s.length();
-    if (len >= 8) return s;
 
+    if (len >= 8) {
+        return s;
+    }
     size_t totalPad = 8 - len;
     size_t leftPad = totalPad / 2;
     size_t rightPad = totalPad - leftPad;
 
-    return std::string(leftPad, ' ') + s + std::string(rightPad, ' ');
+    return string(leftPad, ' ') + s + string(rightPad, ' ');
 }
 
-std::string Tile::getValueStr() const {
+string Tile::getValueStr() const {
+    // In the case of 7 or Netflix, return nothing
     if (value == 7 || resource == ResourceType::Netflix) {
         return "  ";
     }
-
-    return (value < 10 ? " " : "") + std::to_string(value);
+    return (value < 10 ? " " : "") + to_string(value);
 }

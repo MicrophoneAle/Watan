@@ -45,9 +45,6 @@
     <ClCompile Include="modules\SaveLoad.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\TestRunner.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="modules\Tile.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,9 +88,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestModule.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="modules\Board.ixx">
