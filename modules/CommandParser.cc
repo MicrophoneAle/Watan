@@ -18,6 +18,5 @@ Command CommandParser::parse(const string& line) {
     while (iss >> arg) {
         cmd.args.push_back(arg);
     }
-
     return cmd;
 }

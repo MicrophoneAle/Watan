@@ -20,5 +20,5 @@ public:
 
 private:
     bool isValidSeed(const string& seedStr, int& seed);
-    bool isDigit(char ch);  // Added isDigit function
+    bool isDigit(char ch);
 };

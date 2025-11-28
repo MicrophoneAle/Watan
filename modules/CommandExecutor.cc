@@ -101,7 +101,6 @@ void CommandExecutor::execute(const Command& cmd, Game& game) {
             return;
         }
 
-        // Parse colour
         PlayerColour target = parseColour(cmd.args[0]);
 
         if (target == PlayerColour::None) {
@@ -109,10 +108,10 @@ void CommandExecutor::execute(const Command& cmd, Game& game) {
             return;
         }
 
-        // Parse resources
         ResourceType give = parseResource(cmd.args[1]);
         ResourceType take = parseResource(cmd.args[2]);
 
+		// Validate resource types
         if (give == ResourceType::Netflix || take == ResourceType::Netflix) {
             cout << "Invalid resource type.\n";
             cout << "Valid resources: Caffeine, Lab, Lecture, Study, Tutorial\n";
@@ -137,10 +136,10 @@ void CommandExecutor::execute(const Command& cmd, Game& game) {
 
 PlayerColour CommandExecutor::parseColour(const string& str) const {
     string lower = str;
+
     for (char& c : lower) {
         c = tolower(c);
     }
-
     if (lower == "blue") {
         return PlayerColour::Blue;
     }

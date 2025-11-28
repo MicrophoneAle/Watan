@@ -10,6 +10,8 @@ import Criterion;
 import Goal;
 import WatanTypes;
 
+using namespace std;
+
 export class Board {
 public:
     Board();
@@ -20,14 +22,14 @@ public:
     void placeGeese(int tileIndex);
 
     // Core accessors
-    const std::vector<Tile>& getTiles() const;
-    std::vector<Tile>& getTiles();
+    const vector<Tile>& getTiles() const;
+    vector<Tile>& getTiles();
 
-    const std::vector<Criterion>& getCriteria() const;
-    std::vector<Criterion>& getCriteria();
+    const vector<Criterion>& getCriteria() const;
+    vector<Criterion>& getCriteria();
 
-    const std::vector<Goal>& getGoals() const;
-    std::vector<Goal>& getGoals();
+    const vector<Goal>& getGoals() const;
+    vector<Goal>& getGoals();
 
     int getGeeseTileIndex() const;
 
@@ -37,29 +39,29 @@ public:
     bool isConnectedToPlayerGoal(int criterionId, PlayerColour player) const;
 
     // Adjacency helpers
-    std::vector<int> getAdjacentCriteria(int criterionId) const;
-    std::vector<int> getAdjacentGoals(int criterionId) const;
-    std::vector<int> getCriteriaOnTile(int tileIndex) const;
+    vector<int> getAdjacentCriteria(int criterionId) const;
+    vector<int> getAdjacentGoals(int criterionId) const;
+    vector<int> getCriteriaOnTile(int tileIndex) const;
 
     // Distribution
-    void distributeResources(int roll, std::vector<std::pair<PlayerColour, std::vector<std::pair<ResourceType, int>>>>& gains);
+    void distributeResources(int roll, vector<pair<PlayerColour, vector<pair<ResourceType, int>>>>& gains);
 
     // Display
     void print() const;
-    void display(std::ostream& out) const;
-    std::string getCriterionDisplay(int id) const;
-    std::string getGoalDisplay(int id) const;
+    void display(ostream& out) const;
+    string getCriterionDisplay(int id) const;
+    string getGoalDisplay(int id) const;
 
 private:
-    std::vector<Tile> tiles;
-    std::vector<Criterion> criteria;
-    std::vector<Goal> goals;
-    std::vector<std::array<int, 6>> tileCoords;
-    std::map<int, std::pair<int, int>> goalConnections;  // goalId -> (criterion1, criterion2)
+    vector<Tile> tiles;
+    vector<Criterion> criteria;
+    vector<Goal> goals;
+    vector<std::array<int, 6>> tileCoords;
+    map<int, pair<int, int>> goalConnections;
     int geeseTileIndex;
 
     // Adjacent helpers
     bool adjacentCriterionExists(int id) const;
 };
 
-export std::ostream& operator<<(std::ostream& out, const Board& b);
+export ostream& operator<<(ostream& out, const Board& b);

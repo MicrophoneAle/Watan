@@ -4,6 +4,7 @@ import <iostream>;
 import <vector>;
 import <array>;
 import <map>;
+
 import Tile;
 import Criterion;
 import Goal;
@@ -59,16 +60,10 @@ Board::Board() : geeseTileIndex(4) { // Geese start on netflix tile
 }
 
 // Initialize the goal connection mapping based on tile structure
-// Each tile is a hexagon with 6 edges connecting its 6 vertices
 void Board::initializeGoalConnections() {
     goalConnections.clear();
 
-    // Correct connections based on Board::display() structure
-    // Each goal connects exactly TWO criteria (vertices)
-    // Traced by following the visual board layout:
-    // - h(goalId) = horizontal goals between adjacent criteria
-    // - d(goalId) = diagonal goals connecting criteria from adjacent rows
-
+    // Hardcode connections based on board layout
     goalConnections[0] = { 0, 1 };
     goalConnections[1] = { 0, 2 };
     goalConnections[2] = { 1, 5 };
@@ -167,6 +162,7 @@ void Board::initializeTiles() {
         ResourceType::Lecture   // 18
     };
 
+    // Resource values
     vector<int> vals = {
         3, 10, 5, 4, 7, 10, 11, 3, 8, 2, 6, 8, 12, 5, 11, 4, 6, 9, 9
     };
@@ -195,7 +191,7 @@ void Board::placeGeese(int idx) {
     }
 }
 
-// CORRECT adjacency based on goal connections
+// Adjacency based on goal connections
 vector<int> Board::getAdjacentCriteria(int criterionId) const {
     vector<int> adjacent;
 
@@ -217,6 +213,7 @@ vector<int> Board::getAdjacentCriteria(int criterionId) const {
         if (otherCriterion != -1) {
             // Check if already in adjacent list
             bool found = false;
+
             for (int adj : adjacent) {
                 if (adj == otherCriterion) {
                     found = true;
@@ -228,7 +225,6 @@ vector<int> Board::getAdjacentCriteria(int criterionId) const {
             }
         }
     }
-
     return adjacent;
 }
 
@@ -285,7 +281,6 @@ vector<int> Board::getAdjacentGoals(int criterionId) const {
             adjacent.push_back(goalId);
         }
     }
-
     return adjacent;
 }
 
@@ -297,9 +292,9 @@ bool Board::isValidGoalPlacement(int id, PlayerColour player) const {
         return false;
     }
 
-    // Goal must be adjacent to player's criterion or goal
     // Check if either endpoint criterion belongs to the player
     auto it = goalConnections.find(id);
+
     if (it != goalConnections.end()) {
         int v1 = it->second.first;
         int v2 = it->second.second;
@@ -352,7 +347,7 @@ void Board::distributeResources(int roll, vector<pair<PlayerColour, vector<pair<
 
             // Check the criterion on this tile
             const auto& criteriaOnTile = tileCoords[tileIdx];
-
+            
             for (int critId : criteriaOnTile) {
                 if (critId >= 0 && critId < 54) {
                     const Criterion& crit = criteria[critId];
@@ -377,7 +372,7 @@ vector<int> Board::getCriteriaOnTile(int tileIndex) const {
     if (tileIndex < 0 || tileIndex >= 19) {
         return {};
     }
-    return std::vector<int>(tileCoords[tileIndex].begin(), tileCoords[tileIndex].end());
+    return vector<int>(tileCoords[tileIndex].begin(), tileCoords[tileIndex].end());
 }
 
 // Put ownership of goals and critiea into display strings
@@ -396,20 +391,20 @@ string Board::getCriterionDisplay(int id) const {
     char owner = ' ';
 
     switch (crit.getOwner()) {
-    case PlayerColour::Blue: owner = 'B'; break;
-    case PlayerColour::Red: owner = 'R'; break;
-    case PlayerColour::Orange: owner = 'O'; break;
-    case PlayerColour::Yellow: owner = 'Y'; break;
-    default: owner = '?'; break;
+        case PlayerColour::Blue: owner = 'B'; break;
+        case PlayerColour::Red: owner = 'R'; break;
+        case PlayerColour::Orange: owner = 'O'; break;
+        case PlayerColour::Yellow: owner = 'Y'; break;
+        default: owner = '?'; break;
     }
 
     char level = ' ';
 
     switch (crit.getLevel()) {
-    case 1: level = 'A'; break; // Assignment
-    case 2: level = 'M'; break; // Midterm
-    case 3: level = 'E'; break; // Exam
-    default: level = '?'; break;
+        case 1: level = 'A'; break; // Assignment
+        case 2: level = 'M'; break; // Midterm
+        case 3: level = 'E'; break; // Exam
+        default: level = '?'; break;
     }
     return string(1, owner) + string(1, level);
 }
@@ -428,14 +423,13 @@ string Board::getGoalDisplay(int id) const {
     char owner = ' ';
 
     switch (goal.getOwner()) {
-    case PlayerColour::Blue: owner = 'B'; break;
-    case PlayerColour::Red: owner = 'R'; break;
-    case PlayerColour::Orange: owner = 'O'; break;
-    case PlayerColour::Yellow: owner = 'Y'; break;
-    default: owner = '?'; break;
+        case PlayerColour::Blue: owner = 'B'; break;
+        case PlayerColour::Red: owner = 'R'; break;
+        case PlayerColour::Orange: owner = 'O'; break;
+        case PlayerColour::Yellow: owner = 'Y'; break;
+        default: owner = '?'; break;
     }
-
-    return string(1, owner) + "A"; // Achievement
+    return string(1, owner) + "A";
 }
 
 void Board::display(ostream& out) const {
