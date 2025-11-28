@@ -10,6 +10,9 @@ public:
     ResourceType getResource() const;
     int getValue() const;
 
+    std::string getResourceStr() const;
+    std::string getValueStr() const;
+
 private:
     ResourceType resource;
     int value;

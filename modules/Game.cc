@@ -41,7 +41,7 @@ Player& Game::getPlayer() {
 int Game::rollDice() {
     int val = dice->roll(rng);
     cout << "You rolled: " << val << "\n";
-    board.distributeRessources(val);
+    board.distributeResources(val);
     return val;
 }
 

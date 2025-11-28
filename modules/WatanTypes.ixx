@@ -14,6 +14,7 @@ export enum class ResourceType {
 
 // Player colours (students)
 export enum class PlayerColour {
+    None,
     Blue,
     Red,
     Orange,

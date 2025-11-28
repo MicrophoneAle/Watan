@@ -1,127 +1,103 @@
-﻿// ===== Board.cc =====
-module Board;
+﻿module Board;
 
-import <array>;
-import <vector>;
 import <iostream>;
-import <string>;
+import <vector>;
+import <array>;
 import Tile;
 import Criterion;
 import Goal;
 import WatanTypes;
 
-// --------------------------------------------------------------------------
-// Constructor & Setup
-// --------------------------------------------------------------------------
+// =============================
+// Constructor
+// =============================
 Board::Board()
-    : geeseTileIndex{ -1 }
+    : geeseTileIndex(-1)
 {
-    // Allocate containers
     tiles.resize(19);
     criteria.resize(54);
     goals.resize(72);
     tileCoords.resize(19);
 
-    // Initialize criteria & goals with ids; adjacency will be wired later.
-    for (int i = 0; i < 54; ++i) {
+    for (int i = 0; i < 54; i++)
         criteria[i] = Criterion(i);
-    }
-    for (int i = 0; i < 72; ++i) {
+
+    for (int i = 0; i < 72; i++)
         goals[i] = Goal(i);
-    }
 
-    // ---------------------------------------------------------
-    // 6 vertex numbers starting from top-left, going clockwise
-    // These indices come directly from the assignment board diagram.
-    // tileCoords[tile] = { six criterion indices around that tile }
-    // ---------------------------------------------------------
+    // same tileCoords as before…
+    tileCoords[0] = { 0,1,4,9,8,3 };
+    tileCoords[1] = { 2,3,8,14,13,7 };
+    tileCoords[2] = { 4,5,10,16,15,9 };
 
-    // Row 1 (Top)
-    tileCoords[0] = { 0, 1, 4, 9, 8, 3 };
+    tileCoords[3] = { 6,7,13,19,18,12 };
+    tileCoords[4] = { 8,9,15,21,20,14 };
+    tileCoords[5] = { 10,11,17,23,22,16 };
 
-    // Row 2
-    tileCoords[1] = { 2, 3, 8, 14, 13, 7 };
-    tileCoords[2] = { 4, 5, 10, 16, 15, 9 };
+    tileCoords[6] = { 13,14,20,26,25,19 };
+    tileCoords[7] = { 15,16,22,28,27,21 };
 
-    // Row 3
-    tileCoords[3] = { 6, 7, 13, 19, 18, 12 };
-    tileCoords[4] = { 8, 9, 15, 21, 20, 14 };
-    tileCoords[5] = { 10, 11, 17, 23, 22, 16 };
+    tileCoords[8] = { 18,19,25,31,30,24 };
+    tileCoords[9] = { 20,21,27,33,32,26 };
+    tileCoords[10] = { 22,23,29,35,34,28 };
 
-    // Row 4
-    tileCoords[6] = { 13, 14, 20, 26, 25, 19 };
-    tileCoords[7] = { 15, 16, 22, 28, 27, 21 };
+    tileCoords[11] = { 25,26,32,38,37,31 };
+    tileCoords[12] = { 27,28,34,40,39,33 };
 
-    // Row 5
-    tileCoords[8] = { 18, 19, 25, 31, 30, 24 };
-    tileCoords[9] = { 20, 21, 27, 33, 32, 26 };
-    tileCoords[10] = { 22, 23, 29, 35, 34, 28 };
+    tileCoords[13] = { 30,31,37,43,42,36 };
+    tileCoords[14] = { 32,33,39,45,44,38 };
+    tileCoords[15] = { 34,35,41,47,46,40 };
 
-    // Row 6
-    tileCoords[11] = { 25, 26, 32, 38, 37, 31 };
-    tileCoords[12] = { 27, 28, 34, 40, 39, 33 };
+    tileCoords[16] = { 37,38,44,49,48,43 };
+    tileCoords[17] = { 39,40,46,51,50,45 };
 
-    // Row 7
-    tileCoords[13] = { 30, 31, 37, 43, 42, 36 };
-    tileCoords[14] = { 32, 33, 39, 45, 44, 38 };
-    tileCoords[15] = { 34, 35, 41, 47, 46, 40 };
-
-    // Row 8
-    tileCoords[16] = { 37, 38, 44, 49, 48, 43 };
-    tileCoords[17] = { 39, 40, 46, 51, 50, 45 };
-
-    // Row 9 (Bottom)
-    tileCoords[18] = { 44, 45, 50, 53, 52, 49 };
+    tileCoords[18] = { 44,45,50,53,52,49 };
 }
 
-// --------------------------------------------------------------------------
-// Logic Methods
-// --------------------------------------------------------------------------
-
+// =============================
+// Tile Initialization
+// =============================
 void Board::initializeTiles() {
-    // These can be randomized in a later version (RandomBoardSetupStrategy).
-    std::vector<ResourceType> resources = {
-        ResourceType::Caffeine, ResourceType::Study,    ResourceType::Lecture,
-        ResourceType::Lab,      ResourceType::Tutorial, ResourceType::Caffeine,
-        ResourceType::Study,    ResourceType::Lecture,  ResourceType::Lab,
+    std::vector<ResourceType> res = {
+        ResourceType::Caffeine, ResourceType::Study, ResourceType::Lecture,
+        ResourceType::Lab, ResourceType::Tutorial, ResourceType::Caffeine,
+        ResourceType::Study, ResourceType::Lecture, ResourceType::Lab,
         ResourceType::Tutorial, ResourceType::Caffeine, ResourceType::Study,
-        ResourceType::Lecture,  ResourceType::Lab,      ResourceType::Tutorial,
-        ResourceType::Caffeine, ResourceType::Study,    ResourceType::Lecture,
-        ResourceType::Netflix   // Geese tile
+        ResourceType::Lecture, ResourceType::Lab, ResourceType::Tutorial,
+        ResourceType::Caffeine, ResourceType::Study, ResourceType::Lecture,
+        ResourceType::Netflix
     };
 
-    std::vector<int> values = {
-        4, 6, 9, 5, 8, 10, 3, 11, 12, 2,
-        4, 6, 9, 5, 8, 10, 3, 11, 7
+    std::vector<int> vals = {
+        4,6,9,5,8,10,3,11,12,2,4,6,9,5,8,10,3,11,7
     };
 
-    // Make sure we actually have 19 tiles allocated (done in ctor).
-    for (int i = 0; i < 19; ++i) {
-        tiles[i] = Tile(resources[i], values[i]);
-    }
+    for (int i = 0; i < 19; i++)
+        tiles[i] = Tile(res[i], vals[i]);
 }
 
-void Board::placeGeese(int tileIndex) {
-    if (tileIndex >= 0 && tileIndex < static_cast<int>(tiles.size())) {
-        geeseTileIndex = tileIndex;
-    }
+// =============================
+// Core Accessors
+// =============================
+const std::vector<Tile>& Board::getTiles() const { return tiles; }
+const std::vector<Criterion>& Board::getCriteria() const { return criteria; }
+const std::vector<Goal>& Board::getGoals() const { return goals; }
+
+int Board::getGeeseTileIndex() const { return geeseTileIndex; }
+void Board::placeGeese(int idx) {
+    if (idx >= 0 && idx < 19)
+        geeseTileIndex = idx;
 }
 
-int Board::getGeeseTileIndex() const {
-    return geeseTileIndex;
-}
-
+// =============================
+// Helpers
+// =============================
 bool Board::adjacentCriterionExists(int id) const {
-    // Criterion graph:
-    // each vertex has up to 3 neighbors in typical Catan geometry
-    // Formula from UML: neighbors = { id-1, id+1, id±6 }
-    // (wraps must be checked)
-    static const int offsets[4] = { -1, +1, -6, +6 };
-
-    for (int d : offsets) {
-        int n = id + d;
+    static int d[4] = { -1,1,-6,6 };
+    for (int k : d) {
+        int n = id + k;
         if (n >= 0 && n < 54) {
-            if (criteria[n].getOwner() != PlayerColour::Blue)
+            if (criteria[n].getOwner() != PlayerColour::None)
                 return true;
         }
     }
@@ -130,28 +106,17 @@ bool Board::adjacentCriterionExists(int id) const {
 
 bool Board::isValidCriterionPlacement(int id) const {
     if (id < 0 || id >= 54) return false;
-
-    const Criterion& c = criteria[id];
-    if (c.getLevel() != 0) return false;        // already owned
-
-    // must not be next to another criterion
+    if (criteria[id].getLevel() != 0) return false;
     if (adjacentCriterionExists(id)) return false;
-
     return true;
 }
 
-// --------------------
-
 bool Board::adjacentGoalExists(int id) const {
-    // From UML: each edge touches two vertices => two adjacent goals
-    // Approx formula: neighbors ≈ id±1 (same row) and id±6 (row above/below)
-
-    static const int offsets[4] = { -1, +1, -6, +6 };
-
-    for (int d : offsets) {
-        int n = id + d;
+    static int d[4] = { -1,1,-6,6 };
+    for (int k : d) {
+        int n = id + k;
         if (n >= 0 && n < 72) {
-            if (goals[n].getOwner() != PlayerColour::Blue)
+            if (goals[n].getOwner() != PlayerColour::None)
                 return true;
         }
     }
@@ -161,58 +126,36 @@ bool Board::adjacentGoalExists(int id) const {
 bool Board::isValidGoalPlacement(int id) const {
     if (id < 0 || id >= 72) return false;
 
-    const Goal& g = goals[id];
-    if (g.getOwner() != PlayerColour::Blue) return false;
-
-    // Must connect to at least one owned criterion
-    // Simplified from UML:
     int v1 = id / 2;
     int v2 = v1 + 1;
+
     if (v1 >= 0 && v1 < 54 && criteria[v1].getLevel() > 0) return true;
     if (v2 >= 0 && v2 < 54 && criteria[v2].getLevel() > 0) return true;
 
     return false;
 }
 
-void Board::distributeRessources(int roll) {
+// =============================
+// Resource Distribution
+// =============================
+void Board::distributeResources(int roll) {
     if (roll == 7) {
-        std::cout << "[Board] Roll = 7 - Geese activated!\n";
+        std::cout << "[Board] Geese activated.\n";
         return;
     }
 
-    // Version 8: keep behaviour simple (just print which tiles would produce).
-    // In a later version we will:
-    //   - walk tileCoords
-    //   - check which criteria are owned and at what level (Assignment/Midterm/Exam)
-    //   - actually credit resources to players
     for (int i = 0; i < 19; i++) {
         if (tiles[i].getValue() == roll && i != geeseTileIndex) {
-            std::cout << "Tile " << i
-                << " produced " << toString(tiles[i].getResource())
-                << "\n";
+            std::cout << "Tile " << i << " produced "
+                << toString(tiles[i].getResource()) << "\n";
         }
     }
 }
 
-// --------------------------------------------------------------------------
-// Accessors
-// --------------------------------------------------------------------------
-
-const std::vector<Tile>& Board::getTiles() const {
-    return tiles;
-}
-
-const std::vector<Criterion>& Board::getCriteria() const {
-    return criteria;
-}
-
-const std::vector<Goal>& Board::getGoals() const {
-    return goals;
-}
-
-// --------------------------------------------------------------------------
-// Display Logic (unchanged from your version)
-// --------------------------------------------------------------------------
+// =========================================================
+// Display
+// (YOUR ASCII BOARD — unchanged)
+// =========================================================
 
 void Board::display(std::ostream& out) const {
     if (tileCoords.empty()) {
@@ -225,9 +168,12 @@ void Board::display(std::ostream& out) const {
     auto h = [fmt](int i) { return "--" + fmt(i) + "--"; };     // HORIZONTAL NUMBERS
     auto d = [fmt](int i) { return fmt(i); };                   //
     auto t = [fmt](int i) { return fmt(i); };                   // TILE NUMBERS
-    auto r = [](int) { return "CAFFEINE"; };                    // RESOURCE NAMES (placeholder)
-    auto v = [](int) { return "XX"; };                          // DICE NUMBERS (placeholder)
+    auto r = [&](int i) { return tiles[i].getResourceStr(); };
 
+    auto v = [&](int i) {
+        if (i == geeseTileIndex) return std::string(" GEESE");
+        return tiles[i].getValueStr();
+        };
     const std::string S1 = "   ";
     const std::string S2 = "                  ";
     const std::string S3 = "                                 ";
@@ -297,9 +243,7 @@ void Board::display(std::ostream& out) const {
     out << "-----------------------------------------------------------------------------------------" << std::endl;
 }
 
-void Board::print() const {
-    display(std::cout);
-}
+void Board::print() const { display(std::cout); }
 
 std::ostream& operator<<(std::ostream& out, const Board& board) {
     board.display(out);
