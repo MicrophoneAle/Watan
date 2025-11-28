@@ -1,4 +1,3 @@
-// ===== MonopolyCard.ixx =====
 export module MonopolyCard;
 
 import EventCard;

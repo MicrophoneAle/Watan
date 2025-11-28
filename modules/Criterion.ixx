@@ -1,4 +1,3 @@
-// Criterion.ixx
 export module Criterion;
 import WatanTypes;
 

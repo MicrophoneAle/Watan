@@ -1,4 +1,3 @@
-// ===== PlentyCard.cc =====
 module PlentyCard;
 
 import <iostream>;

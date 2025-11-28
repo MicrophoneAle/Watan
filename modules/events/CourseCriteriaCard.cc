@@ -1,4 +1,3 @@
-// ===== CourseCriteriaCard.cc =====
 module CourseCriteriaCard;
 
 import <iostream>;
