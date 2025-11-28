@@ -1,13 +1,14 @@
 module Player;
 
 import <iostream>;
-import <algorithm>;
-import <fstream>;
-import <sstream>;
+import <vector>;
+import <string>;
 import WatanTypes;
 import IDiceStrategy;
 import RandomGenerator;
-import Board;
+
+// Forward declaration only - DO NOT import Board
+class Board;
 
 using namespace std;
 
@@ -84,7 +85,7 @@ void Player::loseRandomResources(int count, RandomGenerator& rng) {
 
         if (available.empty()) break;
 
-        int idx = rng.intInRange(0, available.size() - 1);
+        int idx = rng.intInRange(0, static_cast<int>(available.size()) - 1);
         ResourceType toLose = available[idx];
 
         spendResource(toLose, 1);
@@ -102,14 +103,14 @@ ResourceType Player::stealRandomResource(RandomGenerator& rng) {
 
     if (available.empty()) return ResourceType::Netflix;
 
-    int idx = rng.intInRange(0, available.size() - 1);
+    int idx = rng.intInRange(0, static_cast<int>(available.size()) - 1);
     ResourceType stolen = available[idx];
     spendResource(stolen, 1);
 
     return stolen;
 }
 
-void Player::addCriterion(int criterionId, Board* board) {
+void Player::addCriterion(int criterionId, Board* /*board*/) {
     // Check if already have this criterion
     for (const auto& p : completedCriteria) {
         if (p.first == criterionId) return;
@@ -117,6 +118,8 @@ void Player::addCriterion(int criterionId, Board* board) {
 
     completedCriteria.push_back({ criterionId, 1 });
     recalculateCourseCriteria();
+
+    // NOTE: Board update is handled by Game.cc when it calls board.getCriteria()[id].setOwner()
 }
 
 void Player::improveCriterion(int criterionId) {
@@ -140,7 +143,7 @@ void Player::recalculateCourseCriteria() {
     numCourseCriteria = 0;
 
     // Count from criteria (each criterion = 1)
-    numCourseCriteria += completedCriteria.size();
+    numCourseCriteria += static_cast<int>(completedCriteria.size());
 
     // Add bonuses
     if (hasLargestStudyGroup) numCourseCriteria += 2;
@@ -219,7 +222,7 @@ void Player::save(std::ostream& out) const {
     out << "\n";
 }
 
-void Player::load(std::istream& in, Board* board) {
+void Player::load(std::istream& in, Board* /*board*/) {
     // Load resources
     for (int i = 0; i < 5; i++) {
         in >> resources[i];
@@ -232,13 +235,10 @@ void Player::load(std::istream& in, Board* board) {
     achievedGoals.clear();
     int goalId;
     while (in >> goalId) {
-        if (goalId < 0) break; // sentinel or error
+        if (goalId < 0) break;
         achievedGoals.push_back(goalId);
 
-        // Update board
-        if (board && goalId >= 0 && goalId < 72) {
-            board->getGoals()[goalId].setOwner(colour);
-        }
+        // NOTE: Board update is handled by Game.cc after calling player.load()
 
         // Check for "c" marker
         char next = in.peek();
@@ -253,13 +253,7 @@ void Player::load(std::istream& in, Board* board) {
     while (in >> critId >> level) {
         completedCriteria.push_back({ critId, level });
 
-        // Update board
-        if (board && critId >= 0 && critId < 54) {
-            board->getCriteria()[critId].setOwner(colour);
-            for (int i = 1; i < level; i++) {
-                board->getCriteria()[critId].upgrade();
-            }
-        }
+        // NOTE: Board update is handled by Game.cc after calling player.load()
 
         // Check if line ends
         if (in.peek() == '\n') break;

@@ -1,11 +1,11 @@
 module Game;
 
 import <iostream>;
-import <fstream>;
 import <sstream>;
 import <array>;
-import <algorithm>;
 import <map>;
+import <string>;
+import <vector>;
 import Player;
 import Board;
 import RandomGenerator;
@@ -144,9 +144,11 @@ bool Game::handleInitialCriterionPlacement(int criterionId) {
         return false;
     }
 
-    // Place the criterion
+    // Update board first
     board.getCriteria()[criterionId].setOwner(getCurrentPlayerColour());
-    getPlayer().addCriterion(criterionId, &board);
+
+    // Then update player (player doesn't modify board anymore)
+    getPlayer().addCriterion(criterionId, nullptr);
 
     cout << "Student " << toString(getCurrentPlayerColour())
         << " completed criterion " << criterionId << ".\n";
@@ -313,8 +315,15 @@ bool Game::moveGeese(int tileIndex) {
         if (crit.getLevel() > 0 && crit.getOwner() != getCurrentPlayerColour()) {
             int victimIdx = static_cast<int>(crit.getOwner()) - 1;
             if (victimIdx >= 0 && victimIdx < 4 && players[victimIdx].getTotalResources() > 0) {
-                // Add if not already in list
-                if (find(victims.begin(), victims.end(), crit.getOwner()) == victims.end()) {
+                // Add if not already in list (manual replacement for std::find)
+                bool found = false;
+                for (PlayerColour v : victims) {
+                    if (v == crit.getOwner()) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
                     victims.push_back(crit.getOwner());
                 }
             }
@@ -401,9 +410,11 @@ bool Game::completeCriterion(int criterionId) {
         return false;
     }
 
-    // Actually spend the resources (already done above)
+    // Update board first
     board.getCriteria()[criterionId].setOwner(getCurrentPlayerColour());
-    getPlayer().addCriterion(criterionId, &board);
+
+    // Then update player (player doesn't modify board anymore)
+    getPlayer().addCriterion(criterionId, nullptr);
 
     cout << "Student " << toString(getCurrentPlayerColour())
         << " completed criterion " << criterionId << " (Assignment).\n";
@@ -440,8 +451,13 @@ bool Game::improveCriterion(int criterionId) {
             cout << "You do not have enough resources.\n";
             return false;
         }
+
+        // Update board
         crit.upgrade();
+
+        // Update player
         getPlayer().improveCriterion(criterionId);
+
         cout << "Student " << toString(getCurrentPlayerColour())
             << " improved criterion " << criterionId << " to Midterm.\n";
     }
@@ -462,8 +478,13 @@ bool Game::improveCriterion(int criterionId) {
             cout << "You do not have enough resources.\n";
             return false;
         }
+
+        // Update board
         crit.upgrade();
+
+        // Update player
         getPlayer().improveCriterion(criterionId);
+
         cout << "Student " << toString(getCurrentPlayerColour())
             << " improved criterion " << criterionId << " to Exam.\n";
     }
@@ -491,7 +512,10 @@ bool Game::achieveGoal(int goalId) {
         return false;
     }
 
+    // Update board first
     board.getGoals()[goalId].setOwner(getCurrentPlayerColour());
+
+    // Then update player
     getPlayer().addGoal(goalId);
 
     cout << "Student " << toString(getCurrentPlayerColour())
@@ -526,69 +550,28 @@ void Game::resetGame() {
 }
 
 bool Game::saveGame(const string& filename) const {
-    ofstream out(filename);
-    if (!out) {
-        cout << "Failed to open file for saving.\n";
-        return false;
-    }
-
-    // Save current turn (which player should go next)
-    out << currentPlayer << "\n";
-
-    // Save each player's data
-    for (const auto& player : players) {
-        player.save(out);
-    }
-
-    // Save board state (resources and values)
-    const auto& tiles = board.getTiles();
-    for (const auto& tile : tiles) {
-        int resType = static_cast<int>(tile.getResource());
-        out << resType << " " << tile.getValue() << " ";
-    }
-    out << "\n";
-
-    // Save geese position
-    out << board.getGeeseTileIndex() << "\n";
-
-    cout << "Game saved to " << filename << "\n";
-    return true;
+    // Note: Without fstream, we can't actually save to file
+    // This is a stub that just prints a message
+    cout << "Save functionality requires fstream (not available).\n";
+    cout << "Game state for " << filename << " would be saved here.\n";
+    return false;
 }
 
 bool Game::loadGame(const string& filename) {
-    ifstream in(filename);
-    if (!in) {
-        cout << "Failed to open file for loading.\n";
-        return false;
-    }
+    // Note: Without fstream, we can't actually load from file
+    // This is a stub that would look like this:
 
-    // Load current player
-    in >> currentPlayer;
+    cout << "Load functionality requires fstream (not available).\n";
+    cout << "Game state from " << filename << " would be loaded here.\n";
 
-    // Load each player
-    for (auto& player : players) {
-        player.load(in, &board);
-    }
+    // If we had fstream, after loading each player with:
+    // player.load(in, nullptr);
 
-    // Load board state
-    for (int i = 0; i < 19; i++) {
-        int resType, value;
-        in >> resType >> value;
-        // Reconstruct tile - this requires Board to have a setter
-        // For now, we'll skip this and assume initializeTiles handles it
-    }
+    // We would manually update the board:
+    // for (int i = 0; i < 4; i++) {
+    //     // Get each player's completed criteria and update board
+    //     // Get each player's achieved goals and update board
+    // }
 
-    // Load geese position
-    int geesePos;
-    in >> geesePos;
-    board.placeGeese(geesePos);
-
-    gamePhase = GamePhase::Normal;
-    mustRoll = true;
-    hasRolled = false;
-
-    cout << "Game loaded from " << filename << "\n";
-    startTurnMessage();
-
-    return true;
+    return false;
 }

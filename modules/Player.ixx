@@ -7,7 +7,7 @@ import IDiceStrategy;
 import RandomGenerator;
 
 // Forward declaration
-export class Board;
+class Board;
 
 export class Player {
 public:

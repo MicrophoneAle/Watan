@@ -3,7 +3,6 @@
 import <iostream>;
 import <vector>;
 import <array>;
-import <algorithm>;
 import <map>;
 import Tile;
 import Criterion;
@@ -130,14 +129,15 @@ std::vector<int> Board::getAdjacentCriteria(int criterionId) const {
     if (row > 0) adjacent.push_back(criterionId - 6);
     if (row < 8) adjacent.push_back(criterionId + 6);
 
-    // Filter out invalid indices
-    adjacent.erase(
-        std::remove_if(adjacent.begin(), adjacent.end(),
-            [](int id) { return id < 0 || id >= 54; }),
-        adjacent.end()
-    );
+    // Filter out invalid indices (manual replacement for remove_if)
+    std::vector<int> filtered;
+    for (int id : adjacent) {
+        if (id >= 0 && id < 54) {
+            filtered.push_back(id);
+        }
+    }
 
-    return adjacent;
+    return filtered;
 }
 
 bool Board::adjacentCriterionExists(int id) const {
@@ -343,7 +343,7 @@ void Board::display(std::ostream& out) const {
     out << S1 << d(12) << "      " << t(3) << "     " << d(13) << "             " << d(14) << "      " << t(4) << "     " << d(15) << "             " << d(16) << "      " << t(5) << "     " << d(17) << std::endl;
     out << S1 << "/    " << r(3) << "    \\            /    " << r(4) << "    \\            /    " << r(5) << "    \\" << std::endl;
 
-    // ROW 3 - FIXED: was r(0), r(0) - should be r(6), r(7)
+    // ROW 3
     out << c(12) << "       " << v(3) << "       " << c(13) << h(18) << c(14) << "       " << v(4) << "       " << c(15) << h(19) << c(16) << "       " << v(5) << "       " << c(17) << std::endl;
     out << "   \\                /            \\                /            \\                /" << std::endl;
     out << "   " << d(20) << "             " << d(21) << "      " << t(6) << "     " << d(22) << "             " << d(23) << "      " << t(7) << "     " << d(24) << "             " << d(25) << std::endl;
@@ -367,13 +367,13 @@ void Board::display(std::ostream& out) const {
     out << S1 << d(46) << "      " << t(13) << "     " << d(47) << "             " << d(48) << "      " << t(14) << "     " << d(49) << "             " << d(50) << "      " << t(15) << "     " << d(51) << std::endl;
     out << S1 << "/    " << r(13) << "    \\            /    " << r(14) << "    \\            /    " << r(15) << "    \\" << std::endl;
 
-    // ROW 7 - FIXED: was r(12), r(13) - should be r(16), r(17)
+    // ROW 7
     out << c(36) << "       " << v(13) << "       " << c(37) << h(52) << c(38) << "       " << v(14) << "       " << c(39) << h(53) << c(40) << "       " << v(15) << "       " << c(41) << std::endl;
     out << "   \\                /            \\                /            \\                /" << std::endl;
     out << "   " << d(54) << "             " << d(55) << "      " << t(16) << "     " << d(56) << "             " << d(57) << "      " << t(17) << "     " << d(58) << "             " << d(59) << std::endl;
     out << "     \\            /    " << r(16) << "    \\            /    " << r(17) << "    \\            /" << std::endl;
 
-    // ROW 8 - FIXED: was r(15) - should be r(18)
+    // ROW 8
     out << S1 << "  " << c(42) << h(60) << c(43) << "       " << v(16) << "       " << c(44) << h(61) << c(45) << "       " << v(17) << "       " << c(46) << h(62) << c(47) << std::endl;
     out << S2 << "\\                /            \\                /" << std::endl;
     out << S2 << d(63) << "             " << d(64) << "      " << t(18) << "     " << d(65) << "             " << d(66) << std::endl;
