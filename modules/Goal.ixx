@@ -1,4 +1,5 @@
 export module Goal;
+
 import WatanTypes;
 
 export class Goal {

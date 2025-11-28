@@ -1,13 +1,10 @@
 module Goal;
+
 import WatanTypes;
 
-Goal::Goal()
-    : id{ -1 }, owner{ PlayerColour::None } {
-}
+Goal::Goal() : id{ -1 }, owner{ PlayerColour::None } { }
 
-Goal::Goal(int id)
-    : id{ id }, owner{ PlayerColour::None } {
-}
+Goal::Goal(int id) : id{ id }, owner{ PlayerColour::None } { }
 
 int Goal::getId() const {
     return id;
