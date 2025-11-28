@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="Watan.vcxproj" />
+  <Project Path="Watan.vcxproj" Id="c065a8c5-4747-4589-980f-9307d41b57fe" />
 </Solution>
