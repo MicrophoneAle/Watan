@@ -177,6 +177,16 @@ void Board::initializeTiles() {
 const vector<Tile>& Board::getTiles() const { return tiles; }
 vector<Tile>& Board::getTiles() { return tiles; }
 
+void Board::setTiles(const vector<int>& resourceTypes, const vector<int>& values) {
+    if (resourceTypes.size() != 19 || values.size() != 19) {
+        return;
+    }
+    for (int i = 0; i < 19; i++) {
+        ResourceType resType = static_cast<ResourceType>(resourceTypes[i]);
+        tiles[i] = Tile(resType, values[i]);
+    }
+}
+
 const vector<Criterion>& Board::getCriteria() const { return criteria; }
 vector<Criterion>& Board::getCriteria() { return criteria; }
 

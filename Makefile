@@ -1,7 +1,7 @@
 ﻿CXX = g++-14
 CXXFLAGS = -std=c++20 -fmodules-ts -Wall -g
 COMPILE_HEADER = $(CXX) $(CXXFLAGS) -x c++-system-header -c
-EXEC = watan_fun
+EXEC = watan
 
 STDLIB_SENTINEL = .stdlib_precompiled
 

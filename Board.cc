@@ -25,6 +25,7 @@ public:
     // Core accessors
     const vector<Tile>& getTiles() const;
     vector<Tile>& getTiles();
+    void setTiles(const std::vector<int>& resourceTypes, const std::vector<int>& values);
 
     const vector<Criterion>& getCriteria() const;
     vector<Criterion>& getCriteria();
