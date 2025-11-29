@@ -187,12 +187,15 @@ void Board::setTiles(const vector<int>& resourceTypes, const vector<int>& values
     }
 }
 
+// Criteria accessors
 const vector<Criterion>& Board::getCriteria() const { return criteria; }
 vector<Criterion>& Board::getCriteria() { return criteria; }
 
+// Goal accessors
 const vector<Goal>& Board::getGoals() const { return goals; }
 vector<Goal>& Board::getGoals() { return goals; }
 
+// Geese accessor
 int Board::getGeeseTileIndex() const { return geeseTileIndex; }
 
 void Board::placeGeese(int idx) {
@@ -258,7 +261,7 @@ bool Board::adjacentCriterionExists(int criterionId) const {
         }
 
         if (foundOnTile) {
-            // Look for other criteria on tile that have been placed by other player
+            // Look for other criteria on tile that have been placed by other players
             for (int critId : criteriaOnTile) {
                 if (critId != criterionId && criteria[critId].getOwner() != PlayerColour::None) {
                     return true;
@@ -350,7 +353,6 @@ bool Board::isValidGoalPlacement(int id, PlayerColour player) const {
             }
         }
     }
-
     return false;
 }
 
@@ -397,6 +399,7 @@ void Board::distributeResources(int roll, vector<pair<PlayerColour, vector<pair<
 }
 
 vector<int> Board::getCriteriaOnTile(int tileIndex) const {
+    // If out of bounds, return empty
     if (tileIndex < 0 || tileIndex >= 19) {
         return {};
     }
@@ -412,7 +415,7 @@ string Board::getCriterionDisplay(int id) const {
     const Criterion& crit = criteria[id];
 
     if (crit.getLevel() == 0) {
-        return (id < 10 ? " " : "") + std::to_string(id);
+        return (id < 10 ? " " : "") + to_string(id);
     }
 
     // Show owner initials and level initials
@@ -432,7 +435,7 @@ string Board::getCriterionDisplay(int id) const {
         case 1: level = 'A'; break; // Assignment
         case 2: level = 'M'; break; // Midterm
         case 3: level = 'E'; break; // Exam
-        default: level = '?'; break;
+        default: level = '?'; break; // Unoccupied
     }
     return string(1, owner) + string(1, level);
 }
@@ -464,16 +467,16 @@ void Board::display(ostream& out) const {
     auto c = [this](int i) { return "|" + getCriterionDisplay(i) + "|"; };
     auto h = [this](int i) { return "--" + getGoalDisplay(i) + "--"; };
     auto d = [this](int i) { return getGoalDisplay(i); };
-    auto t = [](int i) { return (i < 10 ? " " : "") + std::to_string(i); };
+    auto t = [](int i) { return (i < 10 ? " " : "") + to_string(i); };
     auto r = [&](int i) { return tiles[i].getResourceStr(); };
     auto v = [&](int i) {
-        if (i == geeseTileIndex) return std::string("GE");
+        if (i == geeseTileIndex) return string("GE");
         return tiles[i].getValueStr();
         };
 
-    const std::string S1 = "   ";
-    const std::string S2 = "                  ";
-    const std::string S3 = "                                 ";
+    const string S1 = "   ";
+    const string S2 = "                  ";
+    const string S3 = "                                 ";
 
     out << "-----------------------------------------------------------------------------------------" << endl;
 
