@@ -9,9 +9,6 @@ import WatanTypes;
 import IDiceStrategy;
 import RandomGenerator;
 
-// Forward declaration of Board
-class Board;
-
 using namespace std;
 
 // Constructor
@@ -30,7 +27,7 @@ PlayerColour Player::getColour() const {
 }
 
 void Player::setDiceStrategy(unique_ptr<IDiceStrategy> strat) {
-    diceStrat = std::move(strat);  // Transfer strat ptr ownership
+    diceStrat = std::move(strat);  // Transfer ownership
 }
 
 int Player::rollDice(RandomGenerator& rng) {
@@ -126,7 +123,7 @@ void Player::loseRandomResources(int count, RandomGenerator& rng) {
 
         // Spend the resource on nothing
         spendResource(toLose, 1);
-        cout << " 1 " << toString(toLose) << "\n";
+        cout << "  1 " << toString(toLose) << "\n";
     }
 }
 
@@ -149,7 +146,7 @@ ResourceType Player::stealRandomResource(RandomGenerator& rng) {
     return stolen;
 }
 
-void Player::addCriterion(int criterionId, Board* /*board*/) {
+void Player::addCriterion(int criterionId) {
     // Check if criterion is already occupied
     for (const auto& p : completedCriteria) {
         if (p.first == criterionId) {
@@ -270,7 +267,7 @@ void Player::save(std::ostream& out) const {
     out << "\n";
 }
 
-void Player::load(std::istream& in, Board* /*board*/) {
+void Player::load(std::istream& in) {
     // Load resources
     for (int i = 0; i < 5; i++) {
         in >> resources[i];

@@ -2,6 +2,7 @@ module Game;
 
 import <iostream>;
 import <sstream>;
+import <fstream>;
 import <array>;
 import <map>;
 import <string>;
@@ -36,15 +37,16 @@ Game::Game()
     players{ Player(PlayerColour::Blue),
              Player(PlayerColour::Red),
              Player(PlayerColour::Orange),
-             Player(PlayerColour::Yellow) }, rng(123) {
-    // Set all players to fair dice initially using make_unique pointer
+             Player(PlayerColour::Yellow) },
+    rng(123) {
+    // Set all players to fair dice initially using make_unique
     for (auto& player : players) {
         player.setDiceStrategy(make_unique<FairDiceStrategy>());
     }
 }
 
 Game::~Game() {
-    // No manual cleanup needed - smart pointers handle everything
+
 }
 
 bool Game::isRunning() const {
@@ -144,7 +146,7 @@ void Game::promptInitialPlacement() {
         hasRolled = false;
 
         // Print the board after all initial placements
-        cout << "\n--------Initial Placement Complete--------\n";
+        cout << "\n=== Initial Placement Complete ===\n";
         cout << "Here is the starting board:\n\n";
         board.print();
         cout << "\n";
@@ -153,7 +155,7 @@ void Game::promptInitialPlacement() {
         return;
     }
 
-    // Snaking order: 0,1,2,3,3,2,1,0
+    // Snake order: 0,1,2,3,3,2,1,0
     int playerIdx = (initialPlacementIndex < 4)
         ? initialPlacementIndex : (7 - initialPlacementIndex);
 
@@ -188,12 +190,12 @@ bool Game::handleInitialCriterionPlacement(int criterionId) {
     board.getCriteria()[criterionId].setOwner(getCurrentPlayerColour());
 
     // Update player after
-    getPlayer().addCriterion(criterionId, nullptr);
+    getPlayer().addCriterion(criterionId);
 
     cout << "Student " << toString(getCurrentPlayerColour())
         << " completed criterion " << criterionId << ".\n";
 
-    // Goal placement
+    // Now wait for goal placement
     lastPlacedCriterion = criterionId;
     waitingForInitialGoal = true;
     promptInitialPlacement();
@@ -276,7 +278,6 @@ void Game::nextTurn() {
         cout << "You must roll the dice before ending your turn.\n";
         return;
     }
-
     // Check for win condition
     if (getPlayer().getCourseCriteria() >= 10) {
         cout << "\n*** GAME OVER ***\n";
@@ -301,6 +302,7 @@ void Game::nextTurn() {
     currentTurn++;
     mustRoll = true;
     hasRolled = false;
+
     startTurnMessage();
 }
 
@@ -405,7 +407,7 @@ bool Game::handleGeesePlacement(int tileIndex) {
     board.placeGeese(tileIndex);
     cout << "Geese moved to tile " << tileIndex << ".\n";
 
-    // Find potential victims
+    // Find potential victims >:)
     geeseVictims.clear();
     vector<int> criteriaOnTile = board.getCriteriaOnTile(tileIndex);
 
@@ -611,7 +613,7 @@ bool Game::completeCriterion(int criterionId) {
     board.getCriteria()[criterionId].setOwner(getCurrentPlayerColour());
 
     // Update player after
-    getPlayer().addCriterion(criterionId, nullptr);
+    getPlayer().addCriterion(criterionId);
 
     cout << "Student " << toString(getCurrentPlayerColour())
         << " completed criterion " << criterionId << " (Assignment).\n";
@@ -624,21 +626,18 @@ bool Game::improveCriterion(int criterionId) {
         cout << "You must roll the dice first.\n";
         return false;
     }
-
     Criterion& crit = board.getCriteria()[criterionId];
 
     if (crit.getOwner() != getCurrentPlayerColour()) {
         cout << "You do not own this criterion.\n";
         return false;
     }
-
     int currentLevel = crit.getLevel();
 
     if (currentLevel >= 3) {
-        cout << "This criterion is already at maximum level.\n";
+        cout << "This criterion is already at maximum level (Exam).\n";
         return false;
     }
-
     // Check resources based on next level
     if (currentLevel == 1) {
         // Not enough resources
@@ -655,7 +654,7 @@ bool Game::improveCriterion(int criterionId) {
         // Update board
         crit.upgrade();
 
-        // Update player after
+        // Update player
         getPlayer().improveCriterion(criterionId);
 
         cout << "Student " << toString(getCurrentPlayerColour())
@@ -682,7 +681,7 @@ bool Game::improveCriterion(int criterionId) {
         // Update board
         crit.upgrade();
 
-        // Update player after
+        // Update player
         getPlayer().improveCriterion(criterionId);
 
         cout << "Student " << toString(getCurrentPlayerColour())
@@ -710,10 +709,10 @@ bool Game::achieveGoal(int goalId) {
         return false;
     }
 
-    // Update board first
+    // Update board 
     board.getGoals()[goalId].setOwner(getCurrentPlayerColour());
 
-    // Then update player
+    // Update player
     getPlayer().addGoal(goalId);
 
     cout << "Student " << toString(getCurrentPlayerColour())
@@ -739,6 +738,7 @@ void Game::resetGame() {
 
     // Reset board and players
     board = Board();
+
     players = {
         Player(PlayerColour::Blue),
         Player(PlayerColour::Red),
@@ -746,30 +746,137 @@ void Game::resetGame() {
         Player(PlayerColour::Yellow)
     };
 
-    // Set all players to fair dice using make_unique ptr
+    // Set all players to fair dice using make_unique
     for (auto& player : players) {
         player.setDiceStrategy(make_unique<FairDiceStrategy>());
     }
+
     startGame();
 }
 
 bool Game::loadBoard(const string& filename) {
-    // Function stub
-    cout << "Loading board from file: " << filename << "\n";
-    cout << "Board state from " << filename << " would be loaded here.\n";
+    ifstream inFile(filename);
 
-    return false;
+    if (!inFile) {
+        cout << "Error: Could not open file " << filename << " for reading.\n";
+        return false;
+    }
+
+    // Read 19 pairs of (resource_type, value)
+    vector<int> resourceTypes;
+    vector<int> values;
+
+    for (int i = 0; i < 19; i++) {
+        int resType, value;
+        inFile >> resType >> value;
+
+        if (inFile.fail()) {
+            cout << "Error: Invalid board file format.\n";
+            return false;
+        }
+
+        resourceTypes.push_back(resType);
+        values.push_back(value);
+    }
+
+    // Apply the custom board configuration
+    board.setTiles(resourceTypes, values);
+
+    inFile.close();
+    cout << "Custom board loaded from " << filename << ".\n";
+    return true;
 }
 
 bool Game::saveGame(const string& filename) const {
-    // Function stub
-    cout << "Game state for " << filename << " would be saved here.\n";
-    return false;
+    ofstream outFile(filename);
+
+    if (!outFile) {
+        cout << "Error: Could not open file " << filename << " for writing.\n";
+        return false;
+    }
+
+    // Determine current turn for saving
+    // If dice have been rolled this turn, save next player's turn
+    // Otherwise, save current player's turn
+    int turnToSave = currentPlayer;
+
+    if (hasRolled && !mustRoll) {
+        turnToSave = (currentPlayer + 1) % 4;
+    }
+
+    outFile << turnToSave << "\n";
+
+    // Save all 4 players' data
+    for (int i = 0; i < 4; i++) {
+        players[i].save(outFile);
+    }
+
+    // Save board tiles (19 tiles, each with resource type and value)
+    const auto& tiles = board.getTiles();
+
+    for (int i = 0; i < 19; i++) {
+        outFile << static_cast<int>(tiles[i].getResource()) << " "
+            << tiles[i].getValue();
+        if (i < 18) {
+            outFile << " ";
+        }
+    }
+    outFile << "\n";
+
+    // Save geese position
+    outFile << board.getGeeseTileIndex() << "\n";
+
+    outFile.close();
+    cout << "Game saved to " << filename << ".\n";
+    return true;
 }
 
 bool Game::loadGame(const string& filename) {
-    // Function stub
-    cout << "Game state from " << filename << " would be loaded here.\n";
+    ifstream inFile(filename);
 
-    return false;
+    if (!inFile) {
+        cout << "Error: Could not open file " << filename << " for reading.\n";
+        return false;
+    }
+
+    // Load current player turn
+    inFile >> currentPlayer;
+    inFile.ignore(); // ignore newline
+
+    // Load all 4 players' data
+    for (int i = 0; i < 4; i++) {
+        players[i].load(inFile);
+    }
+
+    // Load board tiles
+    vector<int> resourceTypes;
+    vector<int> values;
+
+    for (int i = 0; i < 19; i++) {
+        int resType, value;
+        inFile >> resType >> value;
+        resourceTypes.push_back(resType);
+        values.push_back(value);
+    }
+
+    // Apply loaded board configuration
+    board.setTiles(resourceTypes, values);
+
+    // Load geese position
+    int geesePos;
+    inFile >> geesePos;
+    board.placeGeese(geesePos);
+
+    // Set game to normal phase
+    gamePhase = GamePhase::Normal;
+    mustRoll = true;
+    hasRolled = false;
+
+    inFile.close();
+    cout << "Game loaded from " << filename << ".\n";
+
+    // Display current turn
+    startTurnMessage();
+
+    return true;
 }

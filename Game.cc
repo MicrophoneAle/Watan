@@ -33,11 +33,11 @@ public:
     bool isWaitingForGeeseSteal() const;
     bool isWaitingForInitialGoal() const;
 
-    // Board access
+    // Board
     Board& getBoard();
     const Board& getBoard() const;
 
-    // Player access
+    // Player
     Player& getPlayer();
     const Player& getPlayer() const;
     Player& getPlayer(int index);

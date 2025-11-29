@@ -21,7 +21,7 @@ int Tile::getValue() const {
 string Tile::getResourceStr() const {
     string s = toString(resource);
 
-    // Pad to 8 characters for board alignment
+    // Expand to 8 characters for board alignment
     size_t len = s.length();
     if (len >= 8) return s;
 

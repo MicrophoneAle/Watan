@@ -36,7 +36,7 @@ void CommandExecutor::execute(const Command& cmd, Game& game) {
         game.getBoard().display(cout);
     }
     else if (cmd.name == "status") {
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 4; i++) {
             game.getPlayer(i).printStatus(cout);
         }
     }
@@ -104,7 +104,7 @@ void CommandExecutor::execute(const Command& cmd, Game& game) {
         PlayerColour target = parseColour(cmd.args[0]);
 
         if (target == PlayerColour::None) {
-            cout << "Invalid player colour. Use: Blue, Red, Orange, or Yellow\n";
+            cout << "Invalid player colour. Use Blue, Red, Orange, or Yellow\n";
             return;
         }
 

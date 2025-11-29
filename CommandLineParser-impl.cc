@@ -77,7 +77,7 @@ bool CommandLineParser::isValidSeed(const string& seedStr, int& seed) {
         return false;
     }
 
-    // Check if it starts with optional minus sign followed by digits
+    // Check if it starts with a negative sign
     size_t start = 0;
 
     if (seedStr[0] == '-') {

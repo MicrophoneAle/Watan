@@ -58,6 +58,7 @@ int main(int argc, char* argv[]) {
     // Load game or board if specified
     if (options.loadFile.has_value()) {
         cout << "Loading game from: " << options.loadFile.value() << "\n";
+
         if (!game.loadGame(options.loadFile.value())) {
             cerr << "Failed to load game from file.\n";
             return 1;
@@ -66,6 +67,7 @@ int main(int argc, char* argv[]) {
     }
     else if (options.boardFile.has_value()) {
         cout << "Loading board from: " << options.boardFile.value() << "\n";
+
         if (!game.loadBoard(options.boardFile.value())) {
             cerr << "Failed to load board from file.\n";
             return 1;

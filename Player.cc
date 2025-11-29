@@ -9,13 +9,10 @@ import WatanTypes;
 import IDiceStrategy;
 import RandomGenerator;
 
-// Forward declaration of Board
-class Board;
-
 export class Player {
 public:
     Player(PlayerColour colour);
-    ~Player() = default;
+    ~Player() = default; 
 
     // Delete copy constructor and assignment operator
     Player(const Player&) = delete;
@@ -28,7 +25,7 @@ public:
     // Colour
     PlayerColour getColour() const;
 
-    // Dice strategy with smart pointer
+    // Dice strategy
     void setDiceStrategy(std::unique_ptr<IDiceStrategy> strat);
     int rollDice(RandomGenerator& rng);
 
@@ -41,13 +38,13 @@ public:
     ResourceType stealRandomResource(RandomGenerator& rng);
 
     // Criteria and goals
-    void addCriterion(int criterionId, Board* board);
+    void addCriterion(int criterionId);
     void improveCriterion(int criterionId);
     void addGoal(int goalId);
     int getCourseCriteria() const;
     void recalculateCourseCriteria();
 
-    // Study buddies and bonuses
+    // Study buddies and bonuses (unimplemented)
     void addStudyBuddy();
     int getStudyBuddies() const;
     void setLargestStudyGroup(bool has);
@@ -61,7 +58,7 @@ public:
 
     // Save/load
     void save(std::ostream& out) const;
-    void load(std::istream& in, Board* board);
+    void load(std::istream& in);
 
 private:
     PlayerColour colour;
